@@ -79,6 +79,16 @@ public class Level {
         return new TileMap(tileSize, tileTypes, this.getTilesMap());
     }
 
+    public void load() {
+        int windowWidth = 1280;
+        int windowHeight = 720;
+
+        initializeTileMap();
+        createObjects();
+//        createViewWithoutViewport(windowWidth, windowHeight);
+        createViewWithoutViewport(windowWidth, windowHeight);
+    }
+
     /**
      * Creeërt de view zonder viewport
      *
@@ -180,6 +190,29 @@ public class Level {
             intArray[i] = Integer.parseInt(stringArray[i]);
         }
         return intArray;
+    }
+
+    /**
+     * Initialiseert de tilemap
+     */
+    public void initializeTileMap() {
+        Sprite boardsSprite = new Sprite(world.resourcesString + "images/block.png");
+        TileType<BoardTile> boardTileType = new TileType<>(BoardTile.class, boardsSprite);
+
+        TileType[] tileTypes = {boardTileType};
+        world.setTileMap(createTileMap(world.tileSize, tileTypes));
+    }
+
+    /**
+     * Maakt de spelobjecten aan
+     */
+    public void createObjects() {
+        int playerSize = 50;
+        Sprite playerSprite = new Sprite(world.resourcesString + "images/player.png");
+        playerSprite.resize(playerSize, playerSize);
+        world.player = new Player(world, playerSprite, playerSize);
+
+        loadObjects();
     }
 
     /**

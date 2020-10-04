@@ -18,6 +18,8 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
     private final Main world;
     int rightSpeed = 0;
     int leftSpeed = 0;
+    int upSpeed = 0;
+    int downSpeed = 0;
     private final int speed = 15;
 
     /**
@@ -31,14 +33,17 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
         this.size = size;
 //        setCurrentFrameIndex(1);
         setFriction(0.5f);
-        this.setGravity(10);
+//        this.setGravity(10);
     }
 
     @Override
     public void update() {
         float customXSpeed = 0;
+        float customYSpeed = 0;
         customXSpeed = (rightSpeed == 0 && leftSpeed == 0) ? 0 : rightSpeed - leftSpeed;
+        customYSpeed = (downSpeed == 0 && upSpeed == 0) ? 0 : downSpeed - upSpeed;
         setxSpeed(customXSpeed);
+        setySpeed(customYSpeed);
 
         if (getX() < 0) {//links
             setxSpeed(0);
@@ -65,8 +70,10 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
             leftSpeed = speed;
 //            setCurrentFrameIndex(0);
         }
-        if (keyCode == world.UP || key == ' ' || keyCode == world.DOWN) {
-            this.setGravity((this.getGravity() == 10) ? -10 : 10);
+//        if (keyCode == world.UP || key == ' ' || keyCode == world.DOWN) {
+//        this.setGravity((this.getGravity() == 10) ? -10 : 10);
+        if (keyCode == world.UP) {
+            upSpeed = speed;
 //            setDirectionSpeed(0, speed*10);
         }
         if (keyCode == world.RIGHT) {
@@ -74,6 +81,7 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
 //            setCurrentFrameIndex(1);
         }
         if (keyCode == world.DOWN) {
+            downSpeed = speed;
             //
         }
     }
@@ -88,9 +96,11 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
         }
         if (keyCode == world.UP) {
             //customYSpeed = 0;
+            upSpeed = 0;
         }
         if(keyCode == world.DOWN){
             //
+            downSpeed = 0;
         }
     }
 

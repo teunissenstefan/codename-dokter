@@ -55,41 +55,9 @@ public class Main extends GameEngine {
      */
     @Override
     public void setupGame() {
-        int windowWidth = 1280;
-        int windowHeight = 720;
-
         String levelString = String.format(resourcesString + "levels/%1s/", levelToLoad);
         level = new Level(this, levelString);
-
-        initializeTileMap();
-
-        createObjects();
-
-//        createViewWithoutViewport(windowWidth, windowHeight);
-        level.createViewWithoutViewport(windowWidth, windowHeight);
-    }
-
-    /**
-     * Initialiseert de tilemap
-     */
-    private void initializeTileMap() {
-        Sprite boardsSprite = new Sprite(resourcesString + "images/block.png");
-        TileType<BoardTile> boardTileType = new TileType<>(BoardTile.class, boardsSprite);
-
-        TileType[] tileTypes = {boardTileType};
-        tileMap = level.createTileMap(tileSize, tileTypes);
-    }
-
-    /**
-     * Maakt de spelobjecten aan
-     */
-    private void createObjects() {
-        int playerSize = 50;
-        Sprite sprite = new Sprite(resourcesString + "images/block.png");
-        sprite.resize(playerSize, playerSize);
-        player = new Player(this, sprite, playerSize);
-
-        level.loadObjects();
+        level.load();
     }
 
     @Override
