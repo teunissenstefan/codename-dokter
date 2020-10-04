@@ -9,6 +9,7 @@ De tegenstanders kan je ELIMINATEN door vaccins(naalden) te schieten.
 
 Idee:
 Punten oppakken tijdens levels. Met punten kan je upgrades kopen.
+
 Main character zijn wij zelf in een labjas.
 
 Kijk hier voor inspiratie 
