@@ -58,7 +58,9 @@ public class Level {
      * Updaten
      */
     public void update() {
-        backgroundHandler.updateBackgrounds();
+        if(backgroundHandler != null){
+            backgroundHandler.updateBackgrounds();
+        }
     }
 
     /**

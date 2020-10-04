@@ -1,5 +1,6 @@
 package nl.han.ica.game;
 
+import nl.han.ica.game.objects.Background;
 import nl.han.ica.oopg.engine.GameEngine;
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.tile.TileType;
@@ -55,6 +56,7 @@ public class Main extends GameEngine {
      */
     @Override
     public void setupGame() {
+        deleteAllGameOBjects();
         String levelString = String.format(resourcesString + "levels/%1s/", levelToLoad);
         level = new Level(this, levelString);
         level.load();
@@ -63,5 +65,19 @@ public class Main extends GameEngine {
     @Override
     public void update() {
         level.update();
+    }
+
+    @Override
+    public void keyPressed() {
+        ///Tijdelijk erin houden voor level load test
+        if(key == '1'){
+            levelToLoad = 1;
+            setupGame();
+        }else if(key == '2'){
+            levelToLoad = 2;
+            setupGame();
+
+        }
+        super.keyPressed();
     }
 }
