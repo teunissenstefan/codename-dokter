@@ -62,6 +62,6 @@ public class Main extends GameEngine {
 
     @Override
     public void update() {
-//        System.out.println("help");
+        level.update();
     }
 }

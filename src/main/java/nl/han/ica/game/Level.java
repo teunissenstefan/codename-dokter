@@ -17,12 +17,16 @@ import java.util.ArrayList;
 public class Level {
     private String levelDirectory;
     private Main world;
+    private BackgroundHandler backgroundHandler;
     int worldWidth = 1280;
     int worldHeight = 720;
     float zoomFactor = 1;
+    //    int backgroundR = 52;
+//    int backgroundG = 201;
+//    int backgroundB = 235;
     int backgroundR = 52;
-    int backgroundG = 201;
-    int backgroundB = 235;
+    int backgroundG = 0;
+    int backgroundB = 0;
 
     /**
      * The constructor allows you to specify the filename the internal storage
@@ -37,11 +41,41 @@ public class Level {
     }
 
     /**
+     * De map inladen
+     */
+    public void load() {
+        int windowWidth = 1280;
+        int windowHeight = 720;
+
+        backgroundHandler = new BackgroundHandler(world, this.getBackground(), 5);
+        initializeTileMap();
+        createObjects();
+//        createViewWithoutViewport(windowWidth, windowHeight);
+        createViewWithoutViewport(windowWidth, windowHeight);
+    }
+
+    /**
+     * Updaten
+     */
+    public void update() {
+        backgroundHandler.updateBackgrounds();
+    }
+
+    /**
+     * De achtergrond sprite maken
+     *
+     * @return
+     */
+    private Sprite getBackground() {
+        return new Sprite(this.getBackgroundImageLocation());
+    }
+
+    /**
      * De tilesmap data ophalen en returnen als matrix
      *
      * @return int[][]
      */
-    public int[][] getTilesMap() {
+    private int[][] getTilesMap() {
         int[][] returnArray;
         ArrayList<ArrayList<Integer>> linesArrayList = new ArrayList<>();
         int longestLine = 0;
@@ -75,18 +109,8 @@ public class Level {
      * @param tileTypes
      * @return
      */
-    public TileMap createTileMap(int tileSize, TileType[] tileTypes) {
+    private TileMap createTileMap(int tileSize, TileType[] tileTypes) {
         return new TileMap(tileSize, tileTypes, this.getTilesMap());
-    }
-
-    public void load() {
-        int windowWidth = 1280;
-        int windowHeight = 720;
-
-        initializeTileMap();
-        createObjects();
-//        createViewWithoutViewport(windowWidth, windowHeight);
-        createViewWithoutViewport(windowWidth, windowHeight);
     }
 
     /**
@@ -95,10 +119,10 @@ public class Level {
      * @param screenWidth  Breedte van het scherm
      * @param screenHeight Hoogte van het scherm
      */
-    public void createViewWithoutViewport(int screenWidth, int screenHeight) {
+    private void createViewWithoutViewport(int screenWidth, int screenHeight) {
         this.loadWorldData();
         View view = new View(screenWidth, screenHeight);
-//        view.setBackground(world.loadImage("src/main/java/nl/han/ica/game/resources/images/achtergrond.png"));
+//        view.setBackground(world.loadImage("src/main/java/nl/han/ica/game/resources/images/background.png"));
 
         world.setView(view);
         world.size(screenWidth, screenHeight);
@@ -111,7 +135,7 @@ public class Level {
      * @param screenWidth  Breedte van het scherm
      * @param screenHeight Hoogte van het scherm
      */
-    public void createViewWithViewport(int screenWidth, int screenHeight) {
+    private void createViewWithViewport(int screenWidth, int screenHeight) {
         this.loadWorldData();
         EdgeFollowingViewport viewPort = new EdgeFollowingViewport(world.player, (int) Math.ceil(screenWidth / zoomFactor), (int) Math.ceil(screenHeight / zoomFactor), 0, 0);
         viewPort.setTolerance(0, 0, 0, screenWidth / 3);
@@ -121,7 +145,7 @@ public class Level {
         world.setView(view);
         world.size(screenWidth, screenHeight);
         view.setBackground(backgroundR, backgroundG, backgroundB);
-//        view.setBackground(loadImage("src/main/java/nl/han/ica/game/resources/images/achtergrond.png"));//afbeelding moet even groot zijn als viewport >:(
+//        view.setBackground(loadImage("src/main/java/nl/han/ica/game/resources/images/background.png"));//afbeelding moet even groot zijn als viewport >:(
     }
 
     /**
@@ -129,7 +153,7 @@ public class Level {
      *
      * @param line
      */
-    public void handleWorldData(String line) {
+    private void handleWorldData(String line) {
         if (line.startsWith("width=")) {
             worldWidth = Integer.parseInt(line.replace("width=", ""));
         } else if (line.startsWith("height=")) {
@@ -137,18 +161,18 @@ public class Level {
         } else if (line.startsWith("zoom=")) {
             zoomFactor = Float.parseFloat(line.replace("zoom=", ""));
         } else if (line.startsWith("backgroundR=")) {
-            backgroundR = Integer.parseInt(line.replace("backgroundR=", ""));
+//            backgroundR = Integer.parseInt(line.replace("backgroundR=", ""));
         } else if (line.startsWith("backgroundG=")) {
-            backgroundG = Integer.parseInt(line.replace("backgroundG=", ""));
+//            backgroundG = Integer.parseInt(line.replace("backgroundG=", ""));
         } else if (line.startsWith("backgroundB=")) {
-            backgroundB = Integer.parseInt(line.replace("backgroundB=", ""));
+//            backgroundB = Integer.parseInt(line.replace("backgroundB=", ""));
         }
     }
 
     /**
      * De wereld data laden uit het bestand en doorgeven aan handleWorldData
      */
-    public void loadWorldData() {
+    private void loadWorldData() {
         try (BufferedReader br = new BufferedReader(new FileReader(this.getWorldDataLocation()))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -164,7 +188,7 @@ public class Level {
      *
      * @param line
      */
-    public void handleObjects(String line) {
+    private void handleObjects(String line) {
         int coinSize = 50;
         Sprite coinSprite = new Sprite(world.resourcesString + "images/coin.png");
         coinSprite.resize(coinSize * 4, coinSize);
@@ -195,7 +219,7 @@ public class Level {
     /**
      * Initialiseert de tilemap
      */
-    public void initializeTileMap() {
+    private void initializeTileMap() {
         Sprite boardsSprite = new Sprite(world.resourcesString + "images/block.png");
         TileType<BoardTile> boardTileType = new TileType<>(BoardTile.class, boardsSprite);
 
@@ -206,7 +230,7 @@ public class Level {
     /**
      * Maakt de spelobjecten aan
      */
-    public void createObjects() {
+    private void createObjects() {
         int playerSize = 50;
         Sprite playerSprite = new Sprite(world.resourcesString + "images/player.png");
         playerSprite.resize(playerSize, playerSize);
@@ -218,7 +242,7 @@ public class Level {
     /**
      * De object laden uit het bestand en doorgeven aan handleObjects
      */
-    public void loadObjects() {
+    private void loadObjects() {
         try (BufferedReader br = new BufferedReader(new FileReader(this.getObjectsLocation()))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -227,6 +251,15 @@ public class Level {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * De achtergrond afbeelding locatie opvragen
+     *
+     * @return
+     */
+    private String getBackgroundImageLocation() {
+        return levelDirectory.concat("background.png");
     }
 
     /**
