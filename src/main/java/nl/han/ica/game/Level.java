@@ -2,11 +2,13 @@ package nl.han.ica.game;
 
 import nl.han.ica.game.objects.Coin;
 import nl.han.ica.oopg.objects.Sprite;
+import nl.han.ica.oopg.tile.Tile;
 import nl.han.ica.oopg.tile.TileMap;
 import nl.han.ica.oopg.tile.TileType;
 import nl.han.ica.oopg.view.EdgeFollowingViewport;
 import nl.han.ica.oopg.view.View;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -83,12 +85,14 @@ public class Level {
      * @param screenWidth  Breedte van het scherm
      * @param screenHeight Hoogte van het scherm
      */
-    private void createViewWithoutViewport(int screenWidth, int screenHeight) {
+    public void createViewWithoutViewport(int screenWidth, int screenHeight) {
+        this.loadWorldData();
         View view = new View(screenWidth, screenHeight);
 //        view.setBackground(world.loadImage("src/main/java/nl/han/ica/game/resources/images/achtergrond.png"));
 
         world.setView(view);
         world.size(screenWidth, screenHeight);
+        view.setBackground(backgroundR, backgroundG, backgroundB);
     }
 
     /**
@@ -100,7 +104,7 @@ public class Level {
     public void createViewWithViewport(int screenWidth, int screenHeight) {
         this.loadWorldData();
         EdgeFollowingViewport viewPort = new EdgeFollowingViewport(world.player, (int) Math.ceil(screenWidth / zoomFactor), (int) Math.ceil(screenHeight / zoomFactor), 0, 0);
-        viewPort.setTolerance(0, 0, 50, screenWidth / 3);
+        viewPort.setTolerance(0, 0, 0, screenWidth / 3);
         viewPort.setY(0);
         viewPort.setX(0);
         View view = new View(viewPort, worldWidth, worldHeight);
@@ -158,7 +162,7 @@ public class Level {
             int[] vector = stringArrayToIntArray(line.replace("coin=", "").split(","));
             Coin coin = new Coin(world, coinSprite);
             world.addGameObject(coin, vector[0], vector[1]);
-        }else if(line.startsWith("player=")){
+        } else if (line.startsWith("player=")) {
             int[] vector = stringArrayToIntArray(line.replace("player=", "").split(","));
             world.addGameObject(world.player, vector[0], vector[1]);
         }
@@ -166,6 +170,7 @@ public class Level {
 
     /**
      * String[] overzetten naar int[]
+     *
      * @param stringArray
      * @return
      */

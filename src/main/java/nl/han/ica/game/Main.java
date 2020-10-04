@@ -27,7 +27,7 @@ public class Main extends GameEngine {
      * @param args
      */
     public static void main(String[] args) {
-        String[] processingArgs = {"nl.han.ica.game.Main"};
+        String[] processingArgs = {"Dr. Doctor vs. Corona"};
         Main mySketch = new Main();
         mySketch.handleApplicationArguments(args);
 
@@ -66,7 +66,7 @@ public class Main extends GameEngine {
         createObjects();
 
 //        createViewWithoutViewport(windowWidth, windowHeight);
-        level.createViewWithViewport(windowWidth, windowHeight);
+        level.createViewWithoutViewport(windowWidth, windowHeight);
     }
 
     /**
