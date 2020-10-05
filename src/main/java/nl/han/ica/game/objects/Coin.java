@@ -6,29 +6,24 @@ import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
 import processing.core.PGraphics;
 
-public class Coin extends AnimatedSpriteObject implements IFlyingPickup {
-    private Main world;
-    private long lastTime = 0;
-    private int totalAnimationTime = 500;
-    private int totalFrames;
+public class Coin extends AnimatedLoopObject implements IFlyingObject {
+    protected Main world;
 
-    public Coin(Main world, Sprite sprite) {
+    public Coin(Main world, Sprite sprite, int speed) {
         super(sprite, 4);
-        this.totalFrames = 4;
         this.world = world;
-        setCurrentFrameIndex(0);
+        this.totalAnimationTime = 500;
+        this.setxSpeed(speed);
     }
 
     @Override
     public void update() {
-        if (System.currentTimeMillis() > lastTime + (totalAnimationTime / totalFrames)) {
-            setCurrentFrameIndex((getCurrentFrameIndex()+1 < totalFrames) ? getCurrentFrameIndex()+1 : 0);
-            lastTime = System.currentTimeMillis();
-        }
+        System.out.println("help");
+        super.update();
     }
 
     @Override
-    public void pickUp() {
+    public void hit() {
         this.world.getLevel().increaseScore(1);
         this.world.deleteGameObject(this);
         System.out.println(this.world.getLevel().getScore());

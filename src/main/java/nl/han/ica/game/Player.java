@@ -1,7 +1,7 @@
 package nl.han.ica.game;
 
 import nl.han.ica.game.objects.Coin;
-import nl.han.ica.game.objects.IFlyingPickup;
+import nl.han.ica.game.objects.IFlyingObject;
 import nl.han.ica.oopg.collision.CollidedTile;
 import nl.han.ica.oopg.collision.CollisionSide;
 import nl.han.ica.oopg.collision.ICollidableWithGameObjects;
@@ -23,6 +23,7 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
     int downSpeed = 0;
     private final int speed = 15;
     private final int gravity = 10;
+    int lives = 3;
 
     /**
      * Constructor
@@ -159,10 +160,10 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
     @Override
     public void gameObjectCollisionOccurred(List<GameObject> collidedGameObjects) {
         for (GameObject g : collidedGameObjects) {
-            if (g instanceof IFlyingPickup) {
+            if (g instanceof IFlyingObject) {
 //                popSound.rewind();
 //                popSound.play();
-                ((IFlyingPickup) g).pickUp();
+                ((IFlyingObject) g).hit();
 //                world.deleteGameObject(g);
 //                world.increaseBubblesPopped();
             }

@@ -1,5 +1,6 @@
 package nl.han.ica.game;
 
+import nl.han.ica.game.objects.Block;
 import nl.han.ica.game.objects.Coin;
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.tile.Tile;
@@ -228,16 +229,22 @@ public class Level {
      * @param line objects bestand regel
      */
     private void handleObjects(String line) {
-        int coinSize = 50;
+        int objSize = 50;
         Sprite coinSprite = new Sprite(world.resourcesString + "images/coin.png");
-        coinSprite.resize(coinSize * 4, coinSize);
+        coinSprite.resize(objSize * 4, objSize);
+        Sprite blockSprite = new Sprite(world.resourcesString + "images/block.png");
+        blockSprite.resize(objSize, objSize);
         if (line.startsWith("coin=")) {
             int[] vector = stringArrayToIntArray(line.replace("coin=", "").split(","));
-            Coin coin = new Coin(world, coinSprite);
+            Coin coin = new Coin(world, coinSprite, -5);
             world.addGameObject(coin, vector[0], vector[1]);
         } else if (line.startsWith("player=")) {
             int[] vector = stringArrayToIntArray(line.replace("player=", "").split(","));
             world.addGameObject(world.getPlayer(), vector[0], vector[1]);
+        } else if (line.startsWith("block=")) {
+            int[] vector = stringArrayToIntArray(line.replace("block=", "").split(","));
+            Block block = new Block(world, blockSprite, -5);
+            world.addGameObject(block, vector[0], vector[1]);
         }
     }
 
