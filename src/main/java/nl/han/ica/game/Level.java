@@ -28,6 +28,8 @@ public class Level {
     int backgroundR = 52;
     int backgroundG = 0;
     int backgroundB = 0;
+    int score;
+    int highscore = 0;
 
     /**
      * The constructor allows you to specify the filename the internal storage
@@ -49,6 +51,8 @@ public class Level {
         int windowWidth = 1280;
         int windowHeight = 720;
 
+        score = 0;
+
         backgroundHandler = new BackgroundHandler(world, this.getBackground(), 5);
         initializeTileMap();
         createObjects();
@@ -69,6 +73,31 @@ public class Level {
         if (backgroundHandler != null) {
             backgroundHandler.updateBackgrounds();
         }
+    }
+
+    /**
+     * Increase score and update highscore
+     * @param increment int
+     */
+    public void increaseScore(int increment) {
+        score += increment;
+        highscore = (score > highscore) ? score : highscore;
+    }
+
+    /**
+     * Retrieve score
+     * @return
+     */
+    public int getScore(){
+        return this.score;
+    }
+
+    /**
+     * Retrieve highscore
+     * @return
+     */
+    public int getHighScore(){
+        return this.highscore;
     }
 
     /**
@@ -147,7 +176,7 @@ public class Level {
      */
     private void createViewWithViewport(int screenWidth, int screenHeight) {
         this.loadWorldData();
-        EdgeFollowingViewport viewPort = new EdgeFollowingViewport(world.player, (int) Math.ceil(screenWidth / zoomFactor), (int) Math.ceil(screenHeight / zoomFactor), 0, 0);
+        EdgeFollowingViewport viewPort = new EdgeFollowingViewport(world.getPlayer(), (int) Math.ceil(screenWidth / zoomFactor), (int) Math.ceil(screenHeight / zoomFactor), 0, 0);
         viewPort.setTolerance(0, 0, 0, screenWidth / 3);
         viewPort.setY(0);
         viewPort.setX(0);
@@ -208,7 +237,7 @@ public class Level {
             world.addGameObject(coin, vector[0], vector[1]);
         } else if (line.startsWith("player=")) {
             int[] vector = stringArrayToIntArray(line.replace("player=", "").split(","));
-            world.addGameObject(world.player, vector[0], vector[1]);
+            world.addGameObject(world.getPlayer(), vector[0], vector[1]);
         }
     }
 
@@ -244,7 +273,7 @@ public class Level {
         int playerSize = 50;
         Sprite playerSprite = new Sprite(world.resourcesString + "images/player.png");
         playerSprite.resize(playerSize, playerSize);
-        world.player = new Player(world, playerSprite, playerSize);
+        world.setPlayer(new Player(world, playerSprite, playerSize));
 
         loadObjects();
     }

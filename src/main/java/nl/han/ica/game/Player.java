@@ -1,6 +1,7 @@
 package nl.han.ica.game;
 
 import nl.han.ica.game.objects.Coin;
+import nl.han.ica.game.objects.IFlyingPickup;
 import nl.han.ica.oopg.collision.CollidedTile;
 import nl.han.ica.oopg.collision.CollisionSide;
 import nl.han.ica.oopg.collision.ICollidableWithGameObjects;
@@ -34,7 +35,7 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
         this.size = size;
 //        setCurrentFrameIndex(1);
         setFriction(0.5f);
-//        this.setGravity(gravity);
+        this.setGravity(gravity);
     }
 
     @Override
@@ -53,7 +54,7 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
         if (getY() < 0) {//boven
 //            setySpeed(0);
 //            setY(0);
-            world.level.reload();
+            world.getLevel().reload();
         }
         if (getX() > world.getView().getWorldWidth() - size) {//rechts
             setxSpeed(0);
@@ -62,7 +63,7 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
         if (getY() > world.getView().getWorldHeight() - size) {//onder
 //            setySpeed(0);
 //            setY(world.getView().getWorldHeight() - size);
-            world.level.reload();
+            world.getLevel().reload();
         }
     }
 
@@ -158,10 +159,11 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
     @Override
     public void gameObjectCollisionOccurred(List<GameObject> collidedGameObjects) {
         for (GameObject g : collidedGameObjects) {
-            if (g instanceof Coin) {
+            if (g instanceof IFlyingPickup) {
 //                popSound.rewind();
 //                popSound.play();
-                world.deleteGameObject(g);
+                ((IFlyingPickup) g).pickUp();
+//                world.deleteGameObject(g);
 //                world.increaseBubblesPopped();
             }
         }

@@ -6,7 +6,7 @@ import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
 import processing.core.PGraphics;
 
-public class Coin extends AnimatedSpriteObject {
+public class Coin extends AnimatedSpriteObject implements IFlyingPickup {
     private Main world;
     private long lastTime = 0;
     private int totalAnimationTime = 500;
@@ -25,5 +25,14 @@ public class Coin extends AnimatedSpriteObject {
             setCurrentFrameIndex((getCurrentFrameIndex()+1 < totalFrames) ? getCurrentFrameIndex()+1 : 0);
             lastTime = System.currentTimeMillis();
         }
+    }
+
+    @Override
+    public void pickUp() {
+        this.world.getLevel().increaseScore(1);
+        this.world.deleteGameObject(this);
+        System.out.println(this.world.getLevel().getScore());
+        System.out.println(this.world.getLevel().getHighScore());
+        System.out.println("");
     }
 }

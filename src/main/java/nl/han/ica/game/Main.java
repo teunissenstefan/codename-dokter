@@ -16,9 +16,9 @@ import java.io.IOException;
 import java.net.URL;
 
 public class Main extends GameEngine {
-    protected Player player;
+    private Player player;
     int tileSize = 50;
-    public Level level;
+    private Level level;
     private int levelToLoad = 1;
     String resourcesString = "resources/";
 
@@ -42,9 +42,9 @@ public class Main extends GameEngine {
      */
     private void handleApplicationArguments(String[] args) {
         for (int i = 0; i < args.length; i++) {
-            if(args[i].startsWith("--level=") || args[i].startsWith("-l=")){
+            if (args[i].startsWith("--level=") || args[i].startsWith("-l=")) {
                 levelToLoad = Integer.parseInt(args[i].split("=")[1]);
-            }else if(args[i].equals("--dev")){
+            } else if (args[i].equals("--dev")) {
                 resourcesString = "src/main/java/nl/han/ica/game/resources/";
             }
         }
@@ -69,14 +69,38 @@ public class Main extends GameEngine {
     @Override
     public void keyPressed() {
         ///Tijdelijk erin houden voor level load test
-        if(key == '1'){
+        if (key == '1') {
             levelToLoad = 1;
             setupGame();
-        }else if(key == '2'){
+        } else if (key == '2') {
             levelToLoad = 2;
             setupGame();
 
         }
         super.keyPressed();
+    }
+
+    /**
+     * Level opvragen
+     * @return Level
+     */
+    public Level getLevel() {
+        return this.level;
+    }
+
+    /**
+     * Player opvragen
+     * @return Player
+     */
+    public Player getPlayer() {
+        return this.player;
+    }
+
+    /**
+     * Player instellen
+     * @param player Player
+     */
+    public void setPlayer(Player player){
+        this.player = player;
     }
 }
