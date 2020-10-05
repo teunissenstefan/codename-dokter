@@ -21,6 +21,7 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
     int upSpeed = 0;
     int downSpeed = 0;
     private final int speed = 15;
+    private final int gravity = 10;
 
     /**
      * Constructor
@@ -33,7 +34,7 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
         this.size = size;
 //        setCurrentFrameIndex(1);
         setFriction(0.5f);
-//        this.setGravity(10);
+//        this.setGravity(gravity);
     }
 
     @Override
@@ -50,17 +51,18 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
             setX(0);
         }
         if (getY() < 0) {//boven
-            setySpeed(0);
-            setY(0);
+//            setySpeed(0);
+//            setY(0);
+            world.level.reload();
         }
         if (getX() > world.getView().getWorldWidth() - size) {//rechts
             setxSpeed(0);
             setX(world.getView().getWorldWidth() - size);
         }
         if (getY() > world.getView().getWorldHeight() - size) {//onder
-            setySpeed(0);
-            setY(world.getView().getWorldHeight() - size);
-//            System.out.println("Game Over");
+//            setySpeed(0);
+//            setY(world.getView().getWorldHeight() - size);
+            world.level.reload();
         }
     }
 
@@ -70,10 +72,10 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
             leftSpeed = speed;
 //            setCurrentFrameIndex(0);
         }
-//        if (keyCode == world.UP || key == ' ' || keyCode == world.DOWN) {
-//        this.setGravity((this.getGravity() == 10) ? -10 : 10);
-        if (keyCode == world.UP) {
-            upSpeed = speed;
+        if (keyCode == world.UP || key == ' ' || keyCode == world.DOWN) {
+        this.setGravity((this.getGravity() == -gravity) ? gravity : -gravity);
+//        if (keyCode == world.UP) {
+//            upSpeed = speed;
 //            setDirectionSpeed(0, speed*10);
         }
         if (keyCode == world.RIGHT) {
@@ -81,7 +83,7 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
 //            setCurrentFrameIndex(1);
         }
         if (keyCode == world.DOWN) {
-            downSpeed = speed;
+//            downSpeed = speed;
             //
         }
     }
@@ -96,11 +98,11 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
         }
         if (keyCode == world.UP) {
             //customYSpeed = 0;
-            upSpeed = 0;
+//            upSpeed = 0;
         }
         if(keyCode == world.DOWN){
             //
-            downSpeed = 0;
+//            downSpeed = 0;
         }
     }
 

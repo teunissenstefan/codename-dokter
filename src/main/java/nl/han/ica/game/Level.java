@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class Level {
     private String levelDirectory;
+    private int levelToLoad;
     private Main world;
     private BackgroundHandler backgroundHandler;
     int worldWidth = 1280;
@@ -32,12 +33,13 @@ public class Level {
      * The constructor allows you to specify the filename the internal storage
      * will use.
      *
-     * @param world          The Main world object
-     * @param levelDirectory The name of the file that will be used for this persistance
+     * @param world       Main
+     * @param levelToLoad int
      */
-    public Level(Main world, String levelDirectory) {
+    public Level(Main world, int levelToLoad) {
         this.world = world;
-        this.levelDirectory = levelDirectory;
+        this.levelDirectory = String.format(world.resourcesString + "levels/%1s/", levelToLoad);
+        this.levelToLoad = levelToLoad;
     }
 
     /**
@@ -54,11 +56,17 @@ public class Level {
         createViewWithoutViewport(windowWidth, windowHeight);
     }
 
+
+    public void reload() {
+        world.deleteAllGameOBjects();
+        load();
+    }
+
     /**
      * Updaten
      */
     public void update() {
-        if(backgroundHandler != null){
+        if (backgroundHandler != null) {
             backgroundHandler.updateBackgrounds();
         }
     }
@@ -66,7 +74,7 @@ public class Level {
     /**
      * De achtergrond sprite maken
      *
-     * @return
+     * @return Sprite
      */
     private Sprite getBackground() {
         return new Sprite(this.getBackgroundImageLocation());
@@ -107,9 +115,9 @@ public class Level {
     /**
      * De tilemap creëren
      *
-     * @param tileSize
-     * @param tileTypes
-     * @return
+     * @param tileSize  int
+     * @param tileTypes TileType[]
+     * @return TileMap
      */
     private TileMap createTileMap(int tileSize, TileType[] tileTypes) {
         return new TileMap(tileSize, tileTypes, this.getTilesMap());
@@ -153,7 +161,7 @@ public class Level {
     /**
      * De wereld data instellen
      *
-     * @param line
+     * @param line worlddata bestand regel
      */
     private void handleWorldData(String line) {
         if (line.startsWith("width=")) {
@@ -188,7 +196,7 @@ public class Level {
     /**
      * De objects instellen
      *
-     * @param line
+     * @param line objects bestand regel
      */
     private void handleObjects(String line) {
         int coinSize = 50;
@@ -207,8 +215,8 @@ public class Level {
     /**
      * String[] overzetten naar int[]
      *
-     * @param stringArray
-     * @return
+     * @param stringArray String[]
+     * @return int[]
      */
     public int[] stringArrayToIntArray(String[] stringArray) {
         int[] intArray = new int[stringArray.length];
@@ -258,7 +266,7 @@ public class Level {
     /**
      * De achtergrond afbeelding locatie opvragen
      *
-     * @return
+     * @return String
      */
     private String getBackgroundImageLocation() {
         return levelDirectory.concat("background.png");
@@ -267,7 +275,7 @@ public class Level {
     /**
      * De tilemap locatie opvragen
      *
-     * @return
+     * @return String
      */
     private String getTileMapLocation() {
         return levelDirectory.concat("tilemap");
@@ -276,7 +284,7 @@ public class Level {
     /**
      * De wereld data locatie opvragen
      *
-     * @return
+     * @return String
      */
     private String getWorldDataLocation() {
         return levelDirectory.concat("worlddata");
@@ -285,7 +293,7 @@ public class Level {
     /**
      * De object data locatie opvragen
      *
-     * @return
+     * @return String
      */
     private String getObjectsLocation() {
         return levelDirectory.concat("objects");

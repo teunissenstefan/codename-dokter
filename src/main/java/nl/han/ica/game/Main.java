@@ -18,7 +18,7 @@ import java.net.URL;
 public class Main extends GameEngine {
     protected Player player;
     int tileSize = 50;
-    private Level level;
+    public Level level;
     private int levelToLoad = 1;
     String resourcesString = "resources/";
 
@@ -57,8 +57,7 @@ public class Main extends GameEngine {
     @Override
     public void setupGame() {
         deleteAllGameOBjects();
-        String levelString = String.format(resourcesString + "levels/%1s/", levelToLoad);
-        level = new Level(this, levelString);
+        level = new Level(this, levelToLoad);
         level.load();
     }
 
