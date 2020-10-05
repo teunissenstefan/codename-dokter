@@ -2,6 +2,7 @@ package nl.han.ica.game;
 
 import nl.han.ica.game.objects.Background;
 import nl.han.ica.oopg.engine.GameEngine;
+import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.tile.TileType;
 import processing.core.PApplet;
@@ -63,7 +64,22 @@ public class Main extends GameEngine {
 
     @Override
     public void update() {
+        movePlayerToLast();
         level.update();
+    }
+
+    /**
+     * De player naar het einde van de gameObject lijst gooien zodat hij als laatste wordt getekend
+     */
+    private void movePlayerToLast() {
+        for (int i = 0; i < getGameObjectItems().size(); i++) {
+            GameObject go = getGameObjectItems().get(i);
+            if (go instanceof Player) {
+                deleteGameObject(go);
+                addGameObject(go);
+                break;
+            }
+        }
     }
 
     @Override
@@ -82,6 +98,7 @@ public class Main extends GameEngine {
 
     /**
      * Level opvragen
+     *
      * @return Level
      */
     public Level getLevel() {
@@ -90,6 +107,7 @@ public class Main extends GameEngine {
 
     /**
      * Player opvragen
+     *
      * @return Player
      */
     public Player getPlayer() {
@@ -98,9 +116,10 @@ public class Main extends GameEngine {
 
     /**
      * Player instellen
+     *
      * @param player Player
      */
-    public void setPlayer(Player player){
+    public void setPlayer(Player player) {
         this.player = player;
     }
 }
