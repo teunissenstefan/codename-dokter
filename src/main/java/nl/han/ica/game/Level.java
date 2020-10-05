@@ -2,6 +2,7 @@ package nl.han.ica.game;
 
 import nl.han.ica.game.objects.Block;
 import nl.han.ica.game.objects.Coin;
+import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.tile.Tile;
 import nl.han.ica.oopg.tile.TileMap;
@@ -73,6 +74,21 @@ public class Level {
     public void update() {
         if (backgroundHandler != null) {
             backgroundHandler.updateBackgrounds();
+        }
+        movePlayerToLast();
+    }
+
+    /**
+     * De player naar het einde van de gameObject lijst gooien zodat hij als laatste wordt getekend
+     */
+    private void movePlayerToLast() {
+        for (int i = 0; i < world.getGameObjectItems().size(); i++) {
+            GameObject go = world.getGameObjectItems().get(i);
+            if (go instanceof Player) {
+                world.deleteGameObject(go);
+                world.addGameObject(go);
+                break;
+            }
         }
     }
 

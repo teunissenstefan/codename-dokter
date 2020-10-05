@@ -18,7 +18,6 @@ public class Coin extends AnimatedLoopObject implements IFlyingObject {
 
     @Override
     public void update() {
-        System.out.println("help");
         super.update();
     }
 

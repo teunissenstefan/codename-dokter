@@ -108,6 +108,16 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
         }
     }
 
+    /**
+     * De speler heeft pijn :(
+     */
+    public void takeHit(){
+        lives--;
+        if(lives==0){
+            world.getLevel().reload();
+        }
+    }
+
     @Override
     public void tileCollisionOccurred(List<CollidedTile> collidedTiles) {
         PVector vector;

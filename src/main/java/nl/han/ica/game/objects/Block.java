@@ -21,6 +21,7 @@ public class Block extends SpriteObject implements IFlyingObject {
 
     @Override
     public void hit() {
-
+        world.getPlayer().takeHit();
+        world.deleteGameObject(this);
     }
 }

@@ -65,6 +65,21 @@ public class Main extends GameEngine {
     @Override
     public void update() {
         level.update();
+        movePlayerToLast();
+    }
+
+    /**
+     * De player naar het einde van de gameObject lijst gooien zodat hij als laatste wordt getekend
+     */
+    private void movePlayerToLast() {
+        for (int i = 0; i < getGameObjectItems().size(); i++) {
+            GameObject go = getGameObjectItems().get(i);
+            if (go instanceof Player) {
+                deleteGameObject(go);
+                addGameObject(go);
+                break;
+            }
+        }
     }
 
     @Override
