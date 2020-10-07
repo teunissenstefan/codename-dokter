@@ -59,7 +59,6 @@ public class BackgroundHandler {
                 createMoreBackgrounds = false;
             }
         }
-        System.out.println(backgrounds.size());
     }
 
     /**

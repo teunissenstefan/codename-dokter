@@ -2,6 +2,7 @@ package nl.han.ica.game;
 
 import nl.han.ica.game.objects.Block;
 import nl.han.ica.game.objects.Coin;
+import nl.han.ica.oopg.dashboard.Dashboard;
 import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.tile.Tile;
@@ -21,17 +22,21 @@ public class Level {
     private int levelToLoad;
     private Main world;
     private BackgroundHandler backgroundHandler;
+    private TextObject levelText;
+    private TextObject scoreText;
+    private TextObject highScoreText;
+    private TextObject timeText;
+    private TextObject livesText;
     int worldWidth = 1280;
     int worldHeight = 720;
     float zoomFactor = 1;
-    //    int backgroundR = 52;
-//    int backgroundG = 201;
-//    int backgroundB = 235;
     int backgroundR = 52;
-    int backgroundG = 0;
-    int backgroundB = 0;
+    int backgroundG = 201;
+    int backgroundB = 235;
     int score;
     int highscore = 0;
+    int timeInSeconds = -1;
+    long lastUpdateTime = 0;
 
     /**
      * The constructor allows you to specify the filename the internal storage
@@ -55,18 +60,46 @@ public class Level {
 
         score = 0;
 
+        levelText = new TextObject("Level: ", 0, 0);
+        livesText = new TextObject("Lives: 3", 0, 50);
+        scoreText = new TextObject("Score : 0", 0, windowHeight-50);
+        highScoreText = new TextObject("High Score : 0", 0, windowHeight-100);
+        timeText = new TextObject("Time: 0", 0, windowHeight-150);
+
 //        createViewWithoutViewport(windowWidth, windowHeight);
         createViewWithoutViewport(windowWidth, windowHeight);
 
         backgroundHandler = new BackgroundHandler(world, this.getBackground(), 5);
         initializeTileMap();
         createObjects();
+        createDashboard(worldWidth, worldHeight);
     }
 
-
+    /**
+     * De scene herladen
+     */
     public void reload() {
         world.deleteAllGameOBjects();
+        world.deleteAllDashboards();
         load();
+    }
+
+    /**
+     * Maakt het dashboard aan
+     *
+     * @param dashboardWidth  Gewenste breedte van dashboard
+     * @param dashboardHeight Gewenste hoogte van dashboard
+     */
+    private void createDashboard(int dashboardWidth, int dashboardHeight) {
+        Dashboard dashboard = new Dashboard(0, 0, dashboardWidth, dashboardHeight);
+        dashboard.addGameObject(levelText);
+        dashboard.addGameObject(livesText);
+        dashboard.addGameObject(scoreText);
+        dashboard.addGameObject(highScoreText);
+        if(timeInSeconds > -1){
+            dashboard.addGameObject(timeText);
+        }
+        world.addDashboard(dashboard);
     }
 
     /**
@@ -77,6 +110,17 @@ public class Level {
             backgroundHandler.updateBackgrounds();
         }
         movePlayerToLast();
+
+        livesText.setText("Lives: " + world.getPlayer().lives);
+        scoreText.setText("Score: " + score);
+        highScoreText.setText("High Score: " + highscore);
+        if(timeInSeconds > -1){
+            timeText.setText("Time: " + timeInSeconds);
+            if (System.currentTimeMillis() > lastUpdateTime + 1000) {
+                timeInSeconds--;
+                lastUpdateTime = System.currentTimeMillis();
+            }
+        }
     }
 
     /**
@@ -99,7 +143,7 @@ public class Level {
      */
     public void increaseScore(int increment) {
         score += increment;
-        highscore = (score > highscore) ? score : highscore;
+        highscore = Math.max(score, highscore);
     }
 
     /**
@@ -218,11 +262,15 @@ public class Level {
         } else if (line.startsWith("zoom=")) {
             zoomFactor = Float.parseFloat(line.replace("zoom=", ""));
         } else if (line.startsWith("backgroundR=")) {
-//            backgroundR = Integer.parseInt(line.replace("backgroundR=", ""));
+            backgroundR = Integer.parseInt(line.replace("backgroundR=", ""));
         } else if (line.startsWith("backgroundG=")) {
-//            backgroundG = Integer.parseInt(line.replace("backgroundG=", ""));
+            backgroundG = Integer.parseInt(line.replace("backgroundG=", ""));
         } else if (line.startsWith("backgroundB=")) {
-//            backgroundB = Integer.parseInt(line.replace("backgroundB=", ""));
+            backgroundB = Integer.parseInt(line.replace("backgroundB=", ""));
+        } else if (line.startsWith("title=")) {
+            levelText.setText("Level: " + line.replace("title=", ""));
+        } else if (line.startsWith("time=")) {
+            timeInSeconds = Integer.parseInt(line.replace("time=", ""));
         }
     }
 

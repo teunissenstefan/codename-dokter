@@ -25,8 +25,5 @@ public class Coin extends AnimatedLoopObject implements IFlyingObject {
     public void hit() {
         this.world.getLevel().increaseScore(1);
         this.world.deleteGameObject(this);
-        System.out.println(this.world.getLevel().getScore());
-        System.out.println(this.world.getLevel().getHighScore());
-        System.out.println("");
     }
 }
