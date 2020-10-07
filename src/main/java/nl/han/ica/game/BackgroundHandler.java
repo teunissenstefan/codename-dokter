@@ -49,12 +49,17 @@ public class BackgroundHandler {
      * De achtergronden initieren
      */
     private void createBackgrounds() {
-        Background bg = new Background(this.sprite, 0, 0);
-        world.addGameObject(bg);
-        backgrounds.add(bg);
-        Background bg2 = new Background(this.sprite, 1280, 0);
-        world.addGameObject(bg2);
-        backgrounds.add(bg2);
+        boolean createMoreBackgrounds = true;
+        while(createMoreBackgrounds){
+            int newX = backgrounds.size() * this.sprite.getWidth();
+            Background bg = new Background(this.sprite, newX, 0);
+            world.addGameObject(bg);
+            backgrounds.add(bg);
+            if(newX > world.width){
+                createMoreBackgrounds = false;
+            }
+        }
+        System.out.println(backgrounds.size());
     }
 
     /**

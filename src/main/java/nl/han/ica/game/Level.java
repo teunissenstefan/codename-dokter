@@ -55,11 +55,12 @@ public class Level {
 
         score = 0;
 
+//        createViewWithoutViewport(windowWidth, windowHeight);
+        createViewWithoutViewport(windowWidth, windowHeight);
+
         backgroundHandler = new BackgroundHandler(world, this.getBackground(), 5);
         initializeTileMap();
         createObjects();
-//        createViewWithoutViewport(windowWidth, windowHeight);
-        createViewWithoutViewport(windowWidth, windowHeight);
     }
 
 
