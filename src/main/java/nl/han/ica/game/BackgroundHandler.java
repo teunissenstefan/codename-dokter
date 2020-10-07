@@ -49,15 +49,12 @@ public class BackgroundHandler {
      * De achtergronden initieren
      */
     private void createBackgrounds() {
-        boolean createMoreBackgrounds = true;
-        while(createMoreBackgrounds){
-            int newX = backgrounds.size() * this.sprite.getWidth();
+        int newX = 0;
+        while(newX < world.width){
+            newX = backgrounds.size() * this.sprite.getWidth();
             Background bg = new Background(this.sprite, newX, 0);
             world.addGameObject(bg);
             backgrounds.add(bg);
-            if(newX > world.width){
-                createMoreBackgrounds = false;
-            }
         }
     }
 
