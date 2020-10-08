@@ -16,12 +16,19 @@ public class Block extends SpriteObject implements IFlyingObject {
 
     @Override
     public void update() {
-
+        this.checkIfOffScreen();
     }
 
     @Override
     public void hit() {
         world.getPlayer().takeHit();
         world.deleteGameObject(this);
+    }
+
+    @Override
+    public void checkIfOffScreen() {
+        if(this.getX() < (0 - super.width)){
+            this.world.deleteGameObject(this);
+        }
     }
 }

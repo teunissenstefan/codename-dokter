@@ -340,7 +340,10 @@ public class Level {
         TileType<BoardTile> boardTileType = new TileType<>(BoardTile.class, boardsSprite);
 
         TileType[] tileTypes = {boardTileType};
-        world.setTileMap(createTileMap(world.tileSize, tileTypes));
+//        world.setTileMap(createTileMap(world.tileSize, tileTypes));
+        int[][] nullTileMap = new int[][]{{-1}};
+//        TileType[] nullTileType = new TileType[]{new TileType<BoardTile>(BoardTile.class, null)};
+        world.setTileMap(new TileMap(0, tileTypes, nullTileMap));
     }
 
     /**
