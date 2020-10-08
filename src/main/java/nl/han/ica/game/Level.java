@@ -27,6 +27,8 @@ public class Level {
     private TextObject highScoreText;
     private TextObject timeText;
     private TextObject livesText;
+    private nl.han.ica.oopg.sound.Sound objectPopSound;
+    private ObjectSpawner objectSpawner;
     int worldWidth = 1280;
     int worldHeight = 720;
     float zoomFactor = 1;
@@ -72,6 +74,7 @@ public class Level {
         backgroundHandler = new BackgroundHandler(world, this.getBackground(), 5);
         initializeTileMap();
         createObjects();
+        createObjectSpawner();
         createDashboard(worldWidth, worldHeight);
     }
 
@@ -106,6 +109,8 @@ public class Level {
      * Updaten
      */
     public void update() {
+        System.out.println(world.getGameObjectItems().size());
+
         if (backgroundHandler != null) {
             backgroundHandler.updateBackgrounds();
         }
@@ -362,6 +367,13 @@ public class Level {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Maakt de spawner voor de objecten aan
+     */
+    public void createObjectSpawner() {
+        objectSpawner = new ObjectSpawner(world, objectPopSound, 2);
     }
 
     /**
