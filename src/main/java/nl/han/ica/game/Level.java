@@ -109,8 +109,6 @@ public class Level {
      * Updaten
      */
     public void update() {
-        System.out.println(world.getGameObjectItems().size());
-
         if (backgroundHandler != null) {
             backgroundHandler.updateBackgrounds();
         }
@@ -294,31 +292,6 @@ public class Level {
     }
 
     /**
-     * De objects instellen
-     *
-     * @param line objects bestand regel
-     */
-    private void handleObjects(String line) {
-        int objSize = 50;
-        Sprite coinSprite = new Sprite(world.resourcesString + "images/coin.png");
-        coinSprite.resize(objSize * 4, objSize);
-        Sprite blockSprite = new Sprite(world.resourcesString + "images/block.png");
-        blockSprite.resize(objSize, objSize);
-        if (line.startsWith("coin=")) {
-            int[] vector = stringArrayToIntArray(line.replace("coin=", "").split(","));
-            Coin coin = new Coin(world, coinSprite, -5);
-            world.addGameObject(coin, vector[0], vector[1]);
-        } else if (line.startsWith("player=")) {
-            int[] vector = stringArrayToIntArray(line.replace("player=", "").split(","));
-            world.addGameObject(world.getPlayer(), vector[0], vector[1]);
-        } else if (line.startsWith("block=")) {
-            int[] vector = stringArrayToIntArray(line.replace("block=", "").split(","));
-            Block block = new Block(world, blockSprite, -5);
-            world.addGameObject(block, vector[0], vector[1]);
-        }
-    }
-
-    /**
      * String[] overzetten naar int[]
      *
      * @param stringArray String[]
@@ -354,29 +327,14 @@ public class Level {
         Sprite playerSprite = new Sprite(world.resourcesString + "images/player.png");
         playerSprite.resize(playerSize, playerSize);
         world.setPlayer(new Player(world, playerSprite, playerSize));
-
-        loadObjects();
-    }
-
-    /**
-     * De object laden uit het bestand en doorgeven aan handleObjects
-     */
-    private void loadObjects() {
-        try (BufferedReader br = new BufferedReader(new FileReader(this.getObjectsLocation()))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                handleObjects(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        world.addGameObject(world.getPlayer(), 0,0);
     }
 
     /**
      * Maakt de spawner voor de objecten aan
      */
     public void createObjectSpawner() {
-        objectSpawner = new ObjectSpawner(world, objectPopSound, 2);
+        objectSpawner = new ObjectSpawner(world, objectPopSound, 1);
     }
 
     /**
@@ -404,14 +362,5 @@ public class Level {
      */
     private String getWorldDataLocation() {
         return levelDirectory.concat("worlddata");
-    }
-
-    /**
-     * De object data locatie opvragen
-     *
-     * @return String
-     */
-    private String getObjectsLocation() {
-        return levelDirectory.concat("objects");
     }
 }

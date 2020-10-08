@@ -41,8 +41,7 @@ public class ObjectSpawner implements IAlarmListener {
         Sprite blockSprite = new Sprite(world.resourcesString + "images/block.png");
         blockSprite.resize(50,50);
         GameObject block = new Block(world, blockSprite, -10);
-        world.addGameObject(block, world.getLevel().worldWidth, 151);
-//        System.out.println("pizza");
+        world.addGameObject(block, world.getLevel().worldWidth, random.nextInt(world.getLevel().worldHeight-50));
         startAlarm();
     }
 }
