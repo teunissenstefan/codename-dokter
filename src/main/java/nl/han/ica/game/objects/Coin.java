@@ -19,11 +19,19 @@ public class Coin extends AnimatedLoopObject implements IFlyingObject {
     @Override
     public void update() {
         super.update();
+        this.checkIfOffScreen();
     }
 
     @Override
     public void hit() {
         this.world.getLevel().increaseScore(1);
         this.world.deleteGameObject(this);
+    }
+
+    @Override
+    public void checkIfOffScreen() {
+        if(this.getX() < (0 - super.width)){
+            this.world.deleteGameObject(this);
+        }
     }
 }
