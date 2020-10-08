@@ -13,6 +13,7 @@ public class ObjectSpawner implements IAlarmListener {
     private float objectsPerSecond;
     private Random random;
     private Main world;
+    private Alarm alarm;
     private nl.han.ica.oopg.sound.Sound popSound;
 
     /**
@@ -31,9 +32,13 @@ public class ObjectSpawner implements IAlarmListener {
     }
 
     private void startAlarm() {
-        Alarm alarm = new Alarm("New object", 1 / objectsPerSecond);
+        alarm = new Alarm("New object", 1 / objectsPerSecond);
         alarm.addTarget(this);
         alarm.start();
+    }
+
+    public void stopAlarm() {
+        alarm.stop();
     }
 
     @Override

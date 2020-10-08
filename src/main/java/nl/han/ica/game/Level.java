@@ -84,6 +84,7 @@ public class Level {
     public void reload() {
         world.deleteAllGameOBjects();
         world.deleteAllDashboards();
+        objectSpawner.stopAlarm();
         load();
     }
 
