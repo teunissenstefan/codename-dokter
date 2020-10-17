@@ -1,11 +1,12 @@
 package nl.han.ica.game;
 
-import nl.han.ica.game.objects.Block;
-import nl.han.ica.game.objects.Coin;
+import nl.han.ica.game.objects.TextPanel;
+import nl.han.ica.game.objects.buttons.*;
+import nl.han.ica.game.objects.ImageObject;
+import nl.han.ica.game.objects.buttons.Button;
 import nl.han.ica.oopg.dashboard.Dashboard;
 import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
-import nl.han.ica.oopg.tile.Tile;
 import nl.han.ica.oopg.tile.TileMap;
 import nl.han.ica.oopg.tile.TileType;
 import nl.han.ica.oopg.view.EdgeFollowingViewport;
@@ -16,6 +17,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import static processing.core.PConstants.ARROW;
 
 public class Level {
     private String levelDirectory;
@@ -29,16 +32,18 @@ public class Level {
     private TextObject livesText;
     private nl.han.ica.oopg.sound.Sound objectPopSound;
     private ObjectSpawner objectSpawner;
-    int worldWidth = 1280;
-    int worldHeight = 720;
-    float zoomFactor = 1;
-    int backgroundR = 52;
-    int backgroundG = 201;
-    int backgroundB = 235;
-    int score;
-    int highscore = 0;
-    int timeInSeconds = -1;
-    long lastUpdateTime = 0;
+    private int worldWidth = 1280;
+    private int worldHeight = 720;
+    private int windowWidth = 1280;
+    private int windowHeight = 720;
+    private float zoomFactor = 1;
+    private int backgroundR = 52;
+    private int backgroundG = 201;
+    private int backgroundB = 235;
+    private int score;
+    private int highscore = 0;
+    private int timeInSeconds = -1;
+    private long lastUpdateTime = 0;
 
     /**
      * The constructor allows you to specify the filename the internal storage
@@ -57,35 +62,97 @@ public class Level {
      * De map inladen
      */
     public void load() {
-        int windowWidth = 1280;
-        int windowHeight = 720;
-
+        deleteAllObjects();
         score = 0;
 
         levelText = new TextObject("Level: ", 0, 0);
         livesText = new TextObject("Lives: 3", 0, 50);
-        scoreText = new TextObject("Score : 0", 0, windowHeight-50);
-        highScoreText = new TextObject("High Score : 0", 0, windowHeight-100);
-        timeText = new TextObject("Time: 0", 0, windowHeight-150);
+        scoreText = new TextObject("Score : 0", 0, windowHeight - 50);
+        highScoreText = new TextObject("High Score : 0", 0, windowHeight - 100);
+        timeText = new TextObject("Time: 0", 0, windowHeight - 150);
 
-//        createViewWithoutViewport(windowWidth, windowHeight);
         createViewWithoutViewport(windowWidth, windowHeight);
 
         backgroundHandler = new BackgroundHandler(world, this.getBackground(), 5);
-        initializeTileMap();
-        createObjects();
+        createObjects(false);
         createObjectSpawner();
         createDashboard(worldWidth, worldHeight);
     }
 
+    public void loadMenu() {
+        deleteAllObjects();
+        score = 0;
+
+        levelText = new TextObject("Level: ", 0, 0);
+        livesText = new TextObject("Lives: 3", 0, 50);
+        scoreText = new TextObject("Score : 0", 0, windowHeight - 50);
+        highScoreText = new TextObject("High Score : 0", 0, windowHeight - 100);
+        timeText = new TextObject("Time: 0", 0, windowHeight - 150);
+
+        createViewWithoutViewport(windowWidth, windowHeight);
+
+        backgroundHandler = new BackgroundHandler(world, this.getBackground(), 5);
+        createObjects(true);
+    }
+
     /**
-     * De scene herladen
+     * Main menu openen
      */
-    public void reload() {
+    public void menuMain() {
+        this.loadMenu();
+
+        Sprite logoSprite = new Sprite(world.resourcesString + "images/logo.png");
+        ImageObject logo = new ImageObject(logoSprite);
+        world.addGameObject(logo, world.getLevel().worldWidth / 2 - logo.getImage().width / 2, 10);
+
+        Button btnExitGame = new ExitButton(world, world.getWidth() / 2 - 200 / 2, world.getHeight() - (100 + 50), 200, 100);
+        Button btnSelectLevel = new LevelsButton(world, world.getWidth() / 2 - 200 / 2, world.getHeight() - (100 + 200), 200, 100);
+        TextPanel authors = new TextPanel(world,
+                "Thomas & Stefan",
+                10, this.world.getHeight() - 60, 190, 50, new Color(113, 113, 113), new Color(0,0,0)
+        );
+        world.addGameObject(btnExitGame);
+        world.addGameObject(btnSelectLevel);
+        world.addGameObject(authors);
+    }
+
+    /**
+     * Levels menu openen
+     */
+    public void menuLevels() {
+        this.loadMenu();
+
+        Sprite trumpSprite = new Sprite(world.resourcesString + "images/trump.png");
+        ImageObject trump = new ImageObject(trumpSprite);
+        world.addGameObject(trump, world.getLevel().getWorldWidth() - trump.getImage().width, world.getLevel().getWorldHeight() / 2 - trump.getImage().height / 2);
+
+        Button btnBack = new MainMenuButton(world, 10,10, 200, 100);
+        Button btnLevel1 = new LevelSelectButton(world, 1, "1: Toe", 1111,666, 100, 50);
+        Button btnLevel2 = new LevelSelectButton(world, 2, "2: Leg", 1111,454, 70, 200);
+        Button btnLevel3 = new LevelSelectButton(world, 3, "3: Intestines", 1050,290, 150, 100);
+        Button btnLevel4 = new LevelSelectButton(world, 4, "4: Lungs", 1070,180, 125, 100);
+        TextPanel description = new TextPanel(world,
+                "TRUMP IS IN DANGER\nAND YOU HAVE TO SAVE HIM!\nHelp trump defeat the evil libtards\nby curing him of Corona!\n\n" +
+                        "You are Dr. Doctor, flying through trump's body\nto save him. Throughout his body you will find\n" +
+                        "enemies that you have to kill by shooting\nvaccines at them.",
+                10, world.getLevel().getWorldHeight() - (290 + 10), 500, 290, new Color(113, 113, 113), new Color(0,0,0)
+        );
+        world.addGameObject(btnLevel1);
+        world.addGameObject(btnLevel2);
+        world.addGameObject(btnLevel3);
+        world.addGameObject(btnLevel4);
+        world.addGameObject(btnBack);
+        world.addGameObject(description);
+    }
+
+    /**
+     * Alle objecten deleten
+     */
+    public void deleteAllObjects(){
         world.deleteAllGameOBjects();
         world.deleteAllDashboards();
-        objectSpawner.stopAlarm();
-        load();
+        if(objectSpawner != null)
+            objectSpawner.stopAlarm();
     }
 
     /**
@@ -100,7 +167,7 @@ public class Level {
         dashboard.addGameObject(livesText);
         dashboard.addGameObject(scoreText);
         dashboard.addGameObject(highScoreText);
-        if(timeInSeconds > -1){
+        if (timeInSeconds > -1) {
             dashboard.addGameObject(timeText);
         }
         world.addDashboard(dashboard);
@@ -118,7 +185,7 @@ public class Level {
         livesText.setText("Lives: " + world.getPlayer().lives);
         scoreText.setText("Score: " + score);
         highScoreText.setText("High Score: " + highscore);
-        if(timeInSeconds > -1){
+        if (timeInSeconds > -1) {
             timeText.setText("Time: " + timeInSeconds);
             if (System.currentTimeMillis() > lastUpdateTime + 1000) {
                 timeInSeconds--;
@@ -143,6 +210,7 @@ public class Level {
 
     /**
      * Increase score and update highscore
+     *
      * @param increment int
      */
     public void increaseScore(int increment) {
@@ -152,17 +220,19 @@ public class Level {
 
     /**
      * Retrieve score
+     *
      * @return
      */
-    public int getScore(){
+    public int getScore() {
         return this.score;
     }
 
     /**
      * Retrieve highscore
+     *
      * @return
      */
-    public int getHighScore(){
+    public int getHighScore() {
         return this.highscore;
     }
 
@@ -323,12 +393,12 @@ public class Level {
     /**
      * Maakt de spelobjecten aan
      */
-    private void createObjects() {
+    private void createObjects(boolean invincible) {
         int playerSize = 50;
         Sprite playerSprite = new Sprite(world.resourcesString + "images/player.png");
         playerSprite.resize(playerSize, playerSize);
-        world.setPlayer(new Player(world, playerSprite, playerSize));
-        world.addGameObject(world.getPlayer(), 0,0);
+        world.setPlayer(new Player(world, playerSprite, playerSize, invincible));
+        world.addGameObject(world.getPlayer(), 0, 0);
     }
 
     /**
@@ -336,6 +406,24 @@ public class Level {
      */
     public void createObjectSpawner() {
         objectSpawner = new ObjectSpawner(world, objectPopSound, 1);
+    }
+
+    /**
+     * Wereld breedte ophalen
+     *
+     * @return
+     */
+    public int getWorldWidth() {
+        return this.worldWidth;
+    }
+
+    /**
+     * Wereld hoogte ophalen
+     *
+     * @return
+     */
+    public int getWorldHeight() {
+        return this.worldHeight;
     }
 
     /**

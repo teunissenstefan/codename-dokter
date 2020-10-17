@@ -20,7 +20,7 @@ public class Main extends GameEngine {
     private Player player;
     int tileSize = 50;
     private Level level;
-    private int levelToLoad = 1;
+    private int levelToLoad = -1;
     String resourcesString = "resources/";
 
     /**
@@ -58,8 +58,13 @@ public class Main extends GameEngine {
     @Override
     public void setupGame() {
         deleteAllGameOBjects();
-        level = new Level(this, levelToLoad);
-        level.load();
+        if(levelToLoad > 0){
+            level = new Level(this, levelToLoad);
+            level.load();
+        }else{
+            level = new Level(this, 0);
+            level.menuMain();
+        }
     }
 
     @Override
@@ -70,15 +75,20 @@ public class Main extends GameEngine {
     @Override
     public void keyPressed() {
         ///Tijdelijk erin houden voor level load test
-        if (key == '1') {
-            levelToLoad = 1;
-            setupGame();
-        } else if (key == '2') {
-            levelToLoad = 2;
-            setupGame();
-
-        }
+//        if (key == '1') {
+//            levelToLoad = 1;
+//            setupGame();
+//        } else if (key == '2') {
+//            levelToLoad = 2;
+//            setupGame();
+//
+//        }
         super.keyPressed();
+    }
+
+    @Override
+    public void mouseClicked() {
+        super.mouseClicked();
     }
 
     /**
@@ -88,6 +98,14 @@ public class Main extends GameEngine {
      */
     public Level getLevel() {
         return this.level;
+    }
+
+    /**
+     * Level setten
+     * @param level
+     */
+    public void setLevel(Level level){
+        this.level = level;
     }
 
     /**

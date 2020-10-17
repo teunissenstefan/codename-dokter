@@ -14,7 +14,7 @@ import processing.core.PVector;
 
 import java.util.List;
 
-public class Player extends SpriteObject implements ICollidableWithTiles, ICollidableWithGameObjects {
+public class Player extends SpriteObject implements ICollidableWithGameObjects {
     private int size = 100;
     private final Main world;
     int rightSpeed = 0;
@@ -24,19 +24,21 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
     private final int speed = 15;
     private final int gravity = 10;
     int lives = 3;
+    boolean invincible;
 
     /**
      * Constructor
      *
      * @param world Referentie naar de wereld
      */
-    public Player(Main world, Sprite sprite, int size) {
+    public Player(Main world, Sprite sprite, int size, boolean invincible) {
         super(sprite);
         this.world = world;
         this.size = size;
 //        setCurrentFrameIndex(1);
         setFriction(0.5f);
         this.setGravity(gravity);
+        this.invincible = invincible;
     }
 
     @Override
@@ -53,40 +55,39 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
             setX(0);
         }
         if (getY() < 0) {//boven
-//            setySpeed(0);
-//            setY(0);
-            world.getLevel().reload();
+            reloadIfNotInvincible(true);
         }
         if (getX() > world.getView().getWorldWidth() - size) {//rechts
             setxSpeed(0);
             setX(world.getView().getWorldWidth() - size);
         }
         if (getY() > world.getView().getWorldHeight() - size) {//onder
-//            setySpeed(0);
-//            setY(world.getView().getWorldHeight() - size);
-            world.getLevel().reload();
+            reloadIfNotInvincible(false);
         }
+    }
+
+    private void reloadIfNotInvincible(boolean top){
+        if(!invincible) {
+            world.getLevel().load();
+            return;
+        }
+        if(top){
+            setY(0);
+            return;
+        }
+        setY(world.getView().getWorldHeight() - size);
     }
 
     @Override
     public void keyPressed(int keyCode, char key) {
         if (keyCode == world.LEFT) {
             leftSpeed = speed;
-//            setCurrentFrameIndex(0);
         }
         if (keyCode == world.UP || key == ' ' || keyCode == world.DOWN) {
         this.setGravity((this.getGravity() == -gravity) ? gravity : -gravity);
-//        if (keyCode == world.UP) {
-//            upSpeed = speed;
-//            setDirectionSpeed(0, speed*10);
         }
         if (keyCode == world.RIGHT) {
             rightSpeed = speed;
-//            setCurrentFrameIndex(1);
-        }
-        if (keyCode == world.DOWN) {
-//            downSpeed = speed;
-            //
         }
     }
 
@@ -98,14 +99,6 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
         if(keyCode == world.RIGHT){
             rightSpeed = 0;
         }
-        if (keyCode == world.UP) {
-            //customYSpeed = 0;
-//            upSpeed = 0;
-        }
-        if(keyCode == world.DOWN){
-            //
-//            downSpeed = 0;
-        }
     }
 
     /**
@@ -114,56 +107,7 @@ public class Player extends SpriteObject implements ICollidableWithTiles, IColli
     public void takeHit(){
         lives--;
         if(lives==0){
-            world.getLevel().reload();
-        }
-    }
-
-    @Override
-    public void tileCollisionOccurred(List<CollidedTile> collidedTiles) {
-        PVector vector;
-        int tileSize = world.tileSize;
-
-        for (CollidedTile ct : collidedTiles) {
-            if (ct.getTile() instanceof BoardTile) {
-                if (CollisionSide.TOP.equals(ct.getCollisionSide())) {
-                    try {
-                        vector = world.getTileMap().getTilePixelLocation(ct.getTile());
-                        setY(vector.y - getHeight());
-                    } catch (TileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (CollisionSide.BOTTOM.equals(ct.getCollisionSide())) {
-                    try {
-                        vector = world.getTileMap().getTilePixelLocation(ct.getTile());
-                        setY(vector.y + getHeight());
-                    } catch (TileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (CollisionSide.RIGHT.equals(ct.getCollisionSide())) {
-                    try {
-                        vector = world.getTileMap().getTilePixelLocation(ct.getTile());
-                        setX(vector.x + getWidth());
-//                        world.getTileMap().setTile((int) vector.x / tileSize, (int) vector.y / tileSize, -1);
-                    } catch (TileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (CollisionSide.LEFT.equals(ct.getCollisionSide())) {
-                    try {
-                        vector = world.getTileMap().getTilePixelLocation(ct.getTile());
-                        setX(vector.x - getWidth());
-//                        world.getTileMap().setTile((int) vector.x / tileSize, (int) vector.y / tileSize, -1);
-                    } catch (TileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-//            else if(ct.getTile() instanceof CoinTile){
-//                vector = world.getTileMap().getTilePixelLocation(ct.getTile());
-//                world.getTileMap().setTile((int) vector.x / tileSize, (int) vector.y / tileSize, -1);
-//            }
+            world.getLevel().load();
         }
     }
 
