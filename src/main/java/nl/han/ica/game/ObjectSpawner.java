@@ -66,13 +66,30 @@ public class ObjectSpawner implements IAlarmListener {
         world.addGameObject(block, world.getLevel().getWorldWidth(), rnumber0);
 
         //Generate a coin and show it
-        Sprite coinSprite = new Sprite(world.resourcesString + "images/coin.png");
-        coinSprite.resize(200,50);
-        GameObject coin = new Coin(world, coinSprite, -10);
-        world.addGameObject(coin,world.getLevel().getWorldWidth(), rnumber1);
+        if(randomBoolean()) {
+            coinGenerator(rnumber1);
+        }
 
         //Start the next call for objects
         startAlarm();
     }
 
+    public boolean randomBoolean(){
+        // decimal up for more coins
+        // decimal down for less coins
+        return Math.random() < 0.5;
+    }
+
+    public int randomNumber(int min, int max){
+        return random.nextInt(max - min) + min;
+    }
+
+    public void coinGenerator(int rnumber1){
+        // min and max are the range for the coin
+        // being behind the block that it belongs to
+        Sprite coinSprite = new Sprite(world.resourcesString + "images/coin.png");
+        coinSprite.resize(200,50);
+        GameObject coin = new Coin(world, coinSprite, -10);
+        world.addGameObject(coin,world.getLevel().getWorldWidth()+randomNumber(50, 500), rnumber1);
+    }
 }
