@@ -84,7 +84,8 @@ public class Player extends SpriteObject implements ICollidableWithGameObjects {
             leftSpeed = speed;
         }
         if (keyCode == world.UP || key == ' ' || keyCode == world.DOWN) {
-        this.setGravity((this.getGravity() == -gravity) ? gravity : -gravity);
+//        this.setGravity((this.getGravity() == -gravity) ? gravity : -gravity);
+        this.setGravity(this.getGravity() * -1);
         }
         if (keyCode == world.RIGHT) {
             rightSpeed = speed;
