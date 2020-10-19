@@ -2,6 +2,7 @@ package nl.han.ica.game;
 
 import nl.han.ica.game.objects.Block;
 import nl.han.ica.game.objects.Coin;
+import nl.han.ica.game.objects.Heart;
 import nl.han.ica.oopg.alarm.Alarm;
 import nl.han.ica.oopg.alarm.IAlarmListener;
 import nl.han.ica.oopg.objects.GameObject;
@@ -125,5 +126,12 @@ public class ObjectSpawner implements IAlarmListener {
         objectSpriteArrayList.add(blockSprite);
         objectSpeedArrayList.add(-10);
         objectChanceArrayList.add(0.9f);
+
+        Sprite heartSprite = new Sprite(world.resourcesString + "images/hardcore.png");
+        heartSprite.resize(200, 50);
+        objectClassArrayList.add(Heart.class);
+        objectSpriteArrayList.add(heartSprite);
+        objectSpeedArrayList.add(-10);
+        objectChanceArrayList.add(0.05f);
     }
 }
