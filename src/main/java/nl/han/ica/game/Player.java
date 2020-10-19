@@ -111,6 +111,13 @@ public class Player extends SpriteObject implements ICollidableWithGameObjects {
         }
     }
 
+    /**
+     * De speler heeft geen pijn meer :(
+     */
+    public void getsHeart(){
+        lives++;
+    }
+
     @Override
     public void gameObjectCollisionOccurred(List<GameObject> collidedGameObjects) {
         for (GameObject g : collidedGameObjects) {
