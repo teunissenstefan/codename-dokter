@@ -23,6 +23,7 @@ public class ObjectSpawner implements IAlarmListener {
     private ArrayList<Class> objectClassArrayList;
     private ArrayList<Sprite> objectSpriteArrayList;
     private ArrayList<Integer> objectSpeedArrayList;
+    private ArrayList<Integer> objectLocationXArrayList;
     private ArrayList<Float> objectChanceArrayList;
 
     /**
@@ -69,9 +70,10 @@ public class ObjectSpawner implements IAlarmListener {
                     Sprite sprite = objectSpriteArrayList.get(i);
                     Class objectClass = objectClassArrayList.get(i);
                     Integer speed = objectSpeedArrayList.get(i);
+                    Integer locationX = objectLocationXArrayList.get(i);
                     Constructor<?> constructor = objectClass.getConstructor(Main.class, Sprite.class, int.class);
                     GameObject newGameObject = (GameObject)constructor.newInstance(this.world, sprite, speed);
-                    world.addGameObject(newGameObject, world.getWidth(), randomNumber(0, world.getHeight() - sprite.getHeight()));
+                    world.addGameObject(newGameObject, locationX, randomNumber(0, world.getHeight() - sprite.getHeight()));
                     //kijken of hij erin zit. kan beste als we engine aanpassen tbh
                     // GameObject gameObjectCollide kijken ofzo
                 }
@@ -112,6 +114,7 @@ public class ObjectSpawner implements IAlarmListener {
         objectSpriteArrayList = new ArrayList<>();
         objectSpeedArrayList = new ArrayList<>();
         objectChanceArrayList = new ArrayList<>();
+        objectLocationXArrayList = new ArrayList<>();
 
         Sprite coinSprite = new Sprite(world.resourcesString + "images/coin.png");
         coinSprite.resize(200, 50);
@@ -119,6 +122,7 @@ public class ObjectSpawner implements IAlarmListener {
         objectSpriteArrayList.add(coinSprite);
         objectSpeedArrayList.add(-10);
         objectChanceArrayList.add(0.1f);
+        objectLocationXArrayList.add(world.getWidth());
 
         Sprite blockSprite = new Sprite(world.resourcesString + "images/block.png");
         blockSprite.resize(50, 50);
@@ -126,12 +130,14 @@ public class ObjectSpawner implements IAlarmListener {
         objectSpriteArrayList.add(blockSprite);
         objectSpeedArrayList.add(-10);
         objectChanceArrayList.add(0.9f);
+        objectLocationXArrayList.add(world.getWidth());
 
         Sprite heartSprite = new Sprite(world.resourcesString + "images/hardcore.png");
         heartSprite.resize(200, 50);
         objectClassArrayList.add(Heart.class);
         objectSpriteArrayList.add(heartSprite);
-        objectSpeedArrayList.add(-10);
+        objectSpeedArrayList.add(5);
         objectChanceArrayList.add(0.05f);
+        objectLocationXArrayList.add(0);
     }
 }
