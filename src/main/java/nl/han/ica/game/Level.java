@@ -7,13 +7,12 @@ import nl.han.ica.game.objects.buttons.Button;
 import nl.han.ica.oopg.dashboard.Dashboard;
 import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
-import nl.han.ica.oopg.tile.TileMap;
-import nl.han.ica.oopg.tile.TileType;
 import nl.han.ica.oopg.view.EdgeFollowingViewport;
 import nl.han.ica.oopg.view.View;
 
 import java.awt.*;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -246,49 +245,6 @@ public class Level {
     }
 
     /**
-     * De tilesmap data ophalen en returnen als matrix
-     *
-     * @return int[][]
-     */
-    private int[][] getTilesMap() {
-        int[][] returnArray;
-        ArrayList<ArrayList<Integer>> linesArrayList = new ArrayList<>();
-        int longestLine = 0;
-        try (BufferedReader br = new BufferedReader(new FileReader(this.getTileMapLocation()))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                ArrayList<Integer> lineArrList = new ArrayList<>();
-                String[] lineArr = line.split(",");
-                for (int i = 0; i < lineArr.length; i++) {
-                    lineArrList.add(Integer.parseInt(lineArr[i].trim()));
-                }
-                linesArrayList.add(lineArrList);
-                longestLine = Math.max(lineArr.length, longestLine);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        returnArray = new int[linesArrayList.size()][longestLine];
-        for (int i = 0; i < linesArrayList.size(); i++) {
-            for (int x = 0; x < linesArrayList.get(i).size(); x++) {
-                returnArray[i][x] = linesArrayList.get(i).get(x);
-            }
-        }
-        return returnArray;
-    }
-
-    /**
-     * De tilemap creëren
-     *
-     * @param tileSize  int
-     * @param tileTypes TileType[]
-     * @return TileMap
-     */
-    private TileMap createTileMap(int tileSize, TileType[] tileTypes) {
-        return new TileMap(tileSize, tileTypes, this.getTilesMap());
-    }
-
-    /**
      * Creeërt de view zonder viewport
      *
      * @param screenWidth  Breedte van het scherm
@@ -297,30 +253,10 @@ public class Level {
     private void createViewWithoutViewport(int screenWidth, int screenHeight) {
         this.loadWorldData();
         View view = new View(screenWidth, screenHeight);
-//        view.setBackground(world.loadImage("src/main/java/nl/han/ica/game/resources/images/background.png"));
 
         world.setView(view);
         world.size(screenWidth, screenHeight);
         view.setBackground(backgroundR, backgroundG, backgroundB);
-    }
-
-    /**
-     * Creeërt de view met viewport
-     *
-     * @param screenWidth  Breedte van het scherm
-     * @param screenHeight Hoogte van het scherm
-     */
-    private void createViewWithViewport(int screenWidth, int screenHeight) {
-        this.loadWorldData();
-        EdgeFollowingViewport viewPort = new EdgeFollowingViewport(world.getPlayer(), (int) Math.ceil(screenWidth / zoomFactor), (int) Math.ceil(screenHeight / zoomFactor), 0, 0);
-        viewPort.setTolerance(0, 0, 0, screenWidth / 3);
-        viewPort.setY(0);
-        viewPort.setX(0);
-        View view = new View(viewPort, worldWidth, worldHeight);
-        world.setView(view);
-        world.size(screenWidth, screenHeight);
-        view.setBackground(backgroundR, backgroundG, backgroundB);
-//        view.setBackground(loadImage("src/main/java/nl/han/ica/game/resources/images/background.png"));//afbeelding moet even groot zijn als viewport >:(
     }
 
     /**
@@ -329,13 +265,7 @@ public class Level {
      * @param line worlddata bestand regel
      */
     private void handleWorldData(String line) {
-        if (line.startsWith("width=")) {
-            worldWidth = Integer.parseInt(line.replace("width=", ""));
-        } else if (line.startsWith("height=")) {
-            worldHeight = Integer.parseInt(line.replace("height=", ""));
-        } else if (line.startsWith("zoom=")) {
-            zoomFactor = Float.parseFloat(line.replace("zoom=", ""));
-        } else if (line.startsWith("backgroundR=")) {
+        if (line.startsWith("backgroundR=")) {
             backgroundR = Integer.parseInt(line.replace("backgroundR=", ""));
         } else if (line.startsWith("backgroundG=")) {
             backgroundG = Integer.parseInt(line.replace("backgroundG=", ""));
@@ -352,6 +282,9 @@ public class Level {
      * De wereld data laden uit het bestand en doorgeven aan handleWorldData
      */
     private void loadWorldData() {
+        File f = new File(this.getWorldDataLocation());
+        if(!f.exists() || f.isDirectory())
+            return;
         try (BufferedReader br = new BufferedReader(new FileReader(this.getWorldDataLocation()))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -360,34 +293,6 @@ public class Level {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * String[] overzetten naar int[]
-     *
-     * @param stringArray String[]
-     * @return int[]
-     */
-    public int[] stringArrayToIntArray(String[] stringArray) {
-        int[] intArray = new int[stringArray.length];
-        for (int i = 0; i < intArray.length; i++) {
-            intArray[i] = Integer.parseInt(stringArray[i]);
-        }
-        return intArray;
-    }
-
-    /**
-     * Initialiseert de tilemap
-     */
-    private void initializeTileMap() {
-        Sprite boardsSprite = new Sprite(world.resourcesString + "images/block.png");
-        TileType<BoardTile> boardTileType = new TileType<>(BoardTile.class, boardsSprite);
-
-        TileType[] tileTypes = {boardTileType};
-//        world.setTileMap(createTileMap(world.tileSize, tileTypes));
-        int[][] nullTileMap = new int[][]{{-1}};
-//        TileType[] nullTileType = new TileType[]{new TileType<BoardTile>(BoardTile.class, null)};
-        world.setTileMap(new TileMap(0, tileTypes, nullTileMap));
     }
 
     /**
@@ -433,15 +338,6 @@ public class Level {
      */
     private String getBackgroundImageLocation() {
         return levelDirectory.concat("background.png");
-    }
-
-    /**
-     * De tilemap locatie opvragen
-     *
-     * @return String
-     */
-    private String getTileMapLocation() {
-        return levelDirectory.concat("tilemap");
     }
 
     /**

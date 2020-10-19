@@ -1,20 +1,7 @@
 package nl.han.ica.game;
 
-import nl.han.ica.game.objects.Background;
 import nl.han.ica.oopg.engine.GameEngine;
-import nl.han.ica.oopg.objects.GameObject;
-import nl.han.ica.oopg.objects.Sprite;
-import nl.han.ica.oopg.tile.TileType;
 import processing.core.PApplet;
-import processing.core.PGraphics;
-import processing.core.PImage;
-
-import javax.imageio.ImageIO;
-import java.applet.Applet;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
 
 public class Main extends GameEngine {
     private Player player;
@@ -61,34 +48,15 @@ public class Main extends GameEngine {
         if(levelToLoad > 0){
             level = new Level(this, levelToLoad);
             level.load();
-        }else{
-            level = new Level(this, 0);
-            level.menuMain();
+            return;
         }
+        level = new Level(this, 0);
+        level.menuMain();
     }
 
     @Override
     public void update() {
         level.update();
-    }
-
-    @Override
-    public void keyPressed() {
-        ///Tijdelijk erin houden voor level load test
-//        if (key == '1') {
-//            levelToLoad = 1;
-//            setupGame();
-//        } else if (key == '2') {
-//            levelToLoad = 2;
-//            setupGame();
-//
-//        }
-        super.keyPressed();
-    }
-
-    @Override
-    public void mouseClicked() {
-        super.mouseClicked();
     }
 
     /**
