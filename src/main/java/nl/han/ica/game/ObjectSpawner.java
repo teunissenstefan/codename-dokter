@@ -137,7 +137,7 @@ public class ObjectSpawner implements IAlarmListener {
         objectClassArrayList.add(Heart.class);
         objectSpriteArrayList.add(heartSprite);
         objectSpeedArrayList.add(5);
-        objectChanceArrayList.add(0.9f);
-        objectLocationXArrayList.add(0);
+        objectChanceArrayList.add(0.05f);
+        objectLocationXArrayList.add(-50);
     }
 }

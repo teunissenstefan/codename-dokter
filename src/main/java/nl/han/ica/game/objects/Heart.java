@@ -43,7 +43,7 @@ public class Heart extends AnimatedLoopObject implements IFlyingObject  {
 
     @Override
     public void checkIfOffScreen() {
-        if(this.getX() > world.getWidth()){
+        if(this.getX() > this.world.getWidth()){
             this.world.deleteGameObject(this);
         }
     }

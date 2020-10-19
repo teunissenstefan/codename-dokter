@@ -110,7 +110,7 @@ public class Level {
         Button btnSelectLevel = new LevelsButton(world, world.getWidth() / 2 - 200 / 2, world.getHeight() - (100 + 200), 200, 100);
         TextPanel authors = new TextPanel(world,
                 "Thomas & Stefan",
-                10, this.world.getHeight() - 60, 190, 50, new Color(113, 113, 113), new Color(0,0,0)
+                10, this.world.getHeight() - 60, 190, 50, new Color(113, 113, 113), new Color(0, 0, 0)
         );
         world.addGameObject(btnExitGame);
         world.addGameObject(btnSelectLevel);
@@ -127,21 +127,24 @@ public class Level {
         ImageObject trump = new ImageObject(trumpSprite);
         world.addGameObject(trump, world.getLevel().getWorldWidth() - trump.getImage().width, world.getLevel().getWorldHeight() / 2 - trump.getImage().height / 2);
 
-        Button btnBack = new MainMenuButton(world, 10,10, 200, 100);
-        Button btnLevel1 = new LevelSelectButton(world, 1, "1: Toe", 1111,666, 100, 50);
-        Button btnLevel2 = new LevelSelectButton(world, 2, "2: Leg", 1111,454, 70, 200);
-        Button btnLevel3 = new LevelSelectButton(world, 3, "3: Intestines", 1050,290, 150, 100);
-        Button btnLevel4 = new LevelSelectButton(world, 4, "4: Lungs", 1070,180, 125, 100);
+        Button btnBack = new MainMenuButton(world, 10, 10, 200, 100);
+        Button btnLevel1 = new LevelSelectButton(world, 1, "1: Toe", 1111, 666, 100, 50);
+        Button btnLevel2 = new LevelSelectButton(world, 2, "2: Leg", 1111, 454, 70, 200);
+        Button btnLevel3 = new LevelSelectButton(world, 3, "3: Intestines", 1050, 290, 150, 100);
+        Button btnLevel4 = new LevelSelectButton(world, 4, "4: Lungs", 1070, 180, 125, 100);
         TextPanel description = new TextPanel(world,
                 "TRUMP IS IN DANGER\nAND YOU HAVE TO SAVE HIM!\nHelp trump defeat the evil libtards\nby curing him of Corona!\n\n" +
                         "You are Dr. Doctor, flying through trump's body\nto save him. Throughout his body you will find\n" +
                         "enemies that you have to kill by shooting\nvaccines at them.",
-                10, world.getLevel().getWorldHeight() - (290 + 10), 500, 290, new Color(113, 113, 113), new Color(0,0,0)
+                10, world.getLevel().getWorldHeight() - (290 + 10), 500, 290, new Color(113, 113, 113), new Color(0, 0, 0)
         );
         world.addGameObject(btnLevel1);
-        world.addGameObject(btnLevel2);
-        world.addGameObject(btnLevel3);
-        world.addGameObject(btnLevel4);
+        if (getUnlockedLevels().contains(2))
+            world.addGameObject(btnLevel2);
+        if (getUnlockedLevels().contains(3))
+            world.addGameObject(btnLevel3);
+        if (getUnlockedLevels().contains(4))
+            world.addGameObject(btnLevel4);
         world.addGameObject(btnBack);
         world.addGameObject(description);
     }
@@ -149,10 +152,10 @@ public class Level {
     /**
      * Alle objecten deleten
      */
-    public void deleteAllObjects(){
+    public void deleteAllObjects() {
         world.deleteAllGameOBjects();
         world.deleteAllDashboards();
-        if(objectSpawner != null)
+        if (objectSpawner != null)
             objectSpawner.stopAlarm();
     }
 
@@ -186,12 +189,39 @@ public class Level {
         livesText.setText("Lives: " + world.getPlayer().lives);
         scoreText.setText("Score: " + score);
         highScoreText.setText("High Score: " + highscore);
-        if (timeInSeconds > -1) {
+
+        timerCountDown();
+    }
+
+    /**
+     * De timer laten aftellen en kijken of de tijd voorbij is
+     */
+    private void timerCountDown() {
+        if (timeInSeconds > 0) {
             timeText.setText("Time: " + timeInSeconds);
             if (System.currentTimeMillis() > lastUpdateTime + 1000) {
                 timeInSeconds--;
                 lastUpdateTime = System.currentTimeMillis();
             }
+        } else if (timeInSeconds == 0 && objectSpawner != null) {
+            timeText.setText("Time: " + timeInSeconds);
+            timeInSeconds--;
+            levelFinished();
+        }
+    }
+
+    /**
+     * Level finish spawnen
+     */
+    private void levelFinished() {
+        objectSpawner.stopAlarm();
+
+        if(isLastLevel()){
+            //credits
+            System.out.println("Laatste level");
+        }else{
+            //hier de finish spawnen en deze code uitvoeren als je over de finish gaat:
+            unlockNextLevel();
         }
     }
 
@@ -216,28 +246,10 @@ public class Level {
      */
     public void increaseScore(int increment) {
         score += increment;
-        if(score > highscore){
+        if (score > highscore) {
             highscore = score;
             this.setHighscoreToFile(highscore);
         }
-    }
-
-    /**
-     * Retrieve score
-     *
-     * @return
-     */
-    public int getScore() {
-        return this.score;
-    }
-
-    /**
-     * Retrieve highscore
-     *
-     * @return
-     */
-    public int getHighScore() {
-        return this.highscore;
     }
 
     /**
@@ -288,7 +300,7 @@ public class Level {
      */
     private void loadWorldData() {
         File f = new File(this.getWorldDataLocation());
-        if(!f.exists() || f.isDirectory())
+        if (!f.exists() || f.isDirectory())
             return;
         try (BufferedReader br = new BufferedReader(new FileReader(this.getWorldDataLocation()))) {
             String line;
@@ -320,27 +332,29 @@ public class Level {
 
     /**
      * Highscore in bestand gooien
+     *
      * @param highscore
      */
-    public void setHighscoreToFile(int highscore){
+    public void setHighscoreToFile(int highscore) {
         try (PrintWriter out = new PrintWriter(this.getHighscoreLocation())) {
             out.println(highscore);
-        }catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
     /**
      * Highscore laden uit bestand
+     *
      * @return
      */
-    public int getHighscoreFromFile(){
+    public int getHighscoreFromFile() {
         File f = new File(this.getHighscoreLocation());
-        if(f.exists() && !f.isDirectory()){
-            try{
+        if (f.exists() && !f.isDirectory()) {
+            try {
                 String content = Files.readString(Paths.get(this.getHighscoreLocation()), StandardCharsets.US_ASCII);
                 return Integer.parseInt(content.trim());
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -390,5 +404,75 @@ public class Level {
      */
     private String getHighscoreLocation() {
         return levelDirectory.concat("highscore");
+    }
+
+    /**
+     * De vrijgespeelde levels ophalen
+     *
+     * @return
+     */
+    private ArrayList<Integer> getUnlockedLevels() {
+        ArrayList<Integer> unlockedLevels = new ArrayList<>();
+        unlockedLevels.add(1);
+
+        File f = new File(this.getUnlockedLevelsLocation());
+        if (f.exists() && !f.isDirectory()) {
+            try {
+                String content = Files.readString(Paths.get(this.getUnlockedLevelsLocation()), StandardCharsets.US_ASCII).trim();
+                String[] levelStrings = content.split(",");
+                for (int i = 0; i < levelStrings.length; i++) {
+                    unlockedLevels.add(Integer.parseInt(levelStrings[i]));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return unlockedLevels;
+    }
+
+    /**
+     * Kijken of het huidige level het laatste level is
+     * @return
+     */
+    private boolean isLastLevel() {
+        File folder = new File(world.resourcesString+"levels");
+        int lastLevel = 0;
+        for (final File fileEntry : folder.listFiles()) {
+            if (fileEntry.isDirectory()) {
+                int iLevel = Integer.parseInt(fileEntry.getName());
+                lastLevel = Math.max(iLevel, lastLevel);
+            }
+        }
+        return lastLevel == levelToLoad;
+    }
+
+    /**
+     * De vrijgespeelde levels opslaan in het bestand
+     */
+    private void unlockNextLevel() {
+        isLastLevel();
+        ArrayList<Integer> alreadyUnlockedLevels = getUnlockedLevels();
+        if (!alreadyUnlockedLevels.contains(levelToLoad + 1))
+            alreadyUnlockedLevels.add(levelToLoad + 1);
+
+        String putString = "";
+        for (int i = 0; i < alreadyUnlockedLevels.size(); i++) {
+            if(!(alreadyUnlockedLevels.get(i) == 1))
+                putString = putString.concat(alreadyUnlockedLevels.get(i) + ",");
+        }
+        try (PrintWriter out = new PrintWriter(this.getUnlockedLevelsLocation())) {
+            out.println(putString);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * De locatie voor de vrijgespeelde levels ophalen
+     *
+     * @return
+     */
+    private String getUnlockedLevelsLocation() {
+        return world.resourcesString.concat("levels/unlocked");
     }
 }
