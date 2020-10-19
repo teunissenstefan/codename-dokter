@@ -11,10 +11,10 @@ import nl.han.ica.oopg.view.EdgeFollowingViewport;
 import nl.han.ica.oopg.view.View;
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static processing.core.PConstants.ARROW;
@@ -69,6 +69,8 @@ public class Level {
         scoreText = new TextObject("Score : 0", 0, windowHeight - 50);
         highScoreText = new TextObject("High Score : 0", 0, windowHeight - 100);
         timeText = new TextObject("Time: 0", 0, windowHeight - 150);
+
+        highscore = this.getHighscoreFromFile();
 
         createViewWithoutViewport(windowWidth, windowHeight);
 
@@ -214,7 +216,10 @@ public class Level {
      */
     public void increaseScore(int increment) {
         score += increment;
-        highscore = Math.max(score, highscore);
+        if(score > highscore){
+            highscore = score;
+            this.setHighscoreToFile(highscore);
+        }
     }
 
     /**
@@ -314,6 +319,35 @@ public class Level {
     }
 
     /**
+     * Highscore in bestand gooien
+     * @param highscore
+     */
+    public void setHighscoreToFile(int highscore){
+        try (PrintWriter out = new PrintWriter(this.getHighscoreLocation())) {
+            out.println(highscore);
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Highscore laden uit bestand
+     * @return
+     */
+    public int getHighscoreFromFile(){
+        File f = new File(this.getHighscoreLocation());
+        if(f.exists() && !f.isDirectory()){
+            try{
+                String content = Files.readString(Paths.get(this.getHighscoreLocation()), StandardCharsets.US_ASCII);
+                return Integer.parseInt(content.trim());
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    /**
      * Wereld breedte ophalen
      *
      * @return
@@ -347,5 +381,14 @@ public class Level {
      */
     private String getWorldDataLocation() {
         return levelDirectory.concat("worlddata");
+    }
+
+    /**
+     * De highscore locatie opvragen
+     *
+     * @return String
+     */
+    private String getHighscoreLocation() {
+        return levelDirectory.concat("highscore");
     }
 }
