@@ -405,7 +405,7 @@ public class Level {
      * Maakt de spawner voor de objecten aan
      */
     public void createObjectSpawner() {
-        objectSpawner = new ObjectSpawner(world, objectPopSound, 1);
+        objectSpawner = new ObjectSpawner(world, objectPopSound, 2);
     }
 
     /**
