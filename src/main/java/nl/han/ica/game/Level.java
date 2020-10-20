@@ -29,6 +29,7 @@ public class Level {
     private TextObject highScoreText;
     private TextObject timeText;
     private TextObject livesText;
+    private TextPanel creditsTextPanel;
     private nl.han.ica.oopg.sound.Sound objectPopSound;
     private ObjectSpawner objectSpawner;
     private int worldWidth = 1280;
@@ -184,6 +185,10 @@ public class Level {
         if (backgroundHandler != null) {
             backgroundHandler.updateBackgrounds();
         }
+        if(creditsTextPanel != null && creditsTextPanel.getY()+creditsTextPanel.getHeight() < 0){
+            this.menuMain();
+            creditsTextPanel = null;
+        }
         movePlayerToLast();
 
         livesText.setText("Lives: " + world.getPlayer().lives);
@@ -217,12 +222,31 @@ public class Level {
         objectSpawner.stopAlarm();
 
         if(isLastLevel()){
-            //credits
-            System.out.println("Laatste level");
+            menuCredits();
         }else{
-            //hier de finish spawnen en deze code uitvoeren als je over de finish gaat:
             unlockNextLevel();
+            if(levelToLoad!=0){
+                Level level = new Level(this.world, levelToLoad+1);
+                level.load();
+                this.world.setLevel(level);
+            }
         }
+    }
+
+    /**
+     *
+     */
+    private void menuCredits(){
+        levelToLoad = 0;
+        world.deleteAllDashboards();
+        world.deleteAllGameOBjects();
+        world.getView().setBackground(0,0,0);
+
+        creditsTextPanel = new TextPanel(this.world, "Gemaakt door:\n" +
+                "Stefan Teunissen\n" +
+                "Thomas van Minnen\n", this.windowWidth/2-125, this.windowHeight, 250, 125, Color.black, Color.white);
+        creditsTextPanel.setySpeed(-2);
+        world.addGameObject(creditsTextPanel);
     }
 
     /**
