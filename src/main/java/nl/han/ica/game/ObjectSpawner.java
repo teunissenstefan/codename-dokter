@@ -3,10 +3,12 @@ package nl.han.ica.game;
 import nl.han.ica.game.objects.Block;
 import nl.han.ica.game.objects.Coin;
 import nl.han.ica.game.objects.Heart;
+import nl.han.ica.game.objects.IFlyingObject;
 import nl.han.ica.oopg.alarm.Alarm;
 import nl.han.ica.oopg.alarm.IAlarmListener;
 import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
+import processing.core.PVector;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -64,17 +66,18 @@ public class ObjectSpawner implements IAlarmListener {
      */
     @Override
     public void triggerAlarm(String alarmName) {
-        for(int i = 0; i < objectSpriteArrayList.size(); i++){
-            try{
+        for (int i = 0; i < objectSpriteArrayList.size(); i++) {
+            try {
                 Float chance = objectChanceArrayList.get(i);
-                if(randomBoolean(chance)){
+                if (randomBoolean(chance)) {
                     Sprite sprite = objectSpriteArrayList.get(i);
                     Class objectClass = objectClassArrayList.get(i);
                     Integer speed = objectSpeedArrayList.get(i);
                     Integer locationX = objectLocationXArrayList.get(i);
                     Constructor<?> constructor = objectClass.getConstructor(Main.class, Sprite.class, int.class);
-                    GameObject newGameObject = (GameObject)constructor.newInstance(this.world, sprite, speed);
-                    world.addGameObject(newGameObject, locationX, randomNumber(0, world.getHeight() - sprite.getHeight()));
+                    GameObject newGameObject = (GameObject) constructor.newInstance(this.world, sprite, speed);
+                    world.addGameObject(newGameObject, locationX, 0);
+                    checkIfObjectIsInsideOtherObject(newGameObject, sprite);
                     //kijken of hij erin zit. kan beste als we engine aanpassen tbh
                     // GameObject gameObjectCollide kijken ofzo
                 }
@@ -88,8 +91,28 @@ public class ObjectSpawner implements IAlarmListener {
         startAlarm();
     }
 
+    private void checkIfObjectIsInsideOtherObject(GameObject newGameObject, Sprite sprite) {
+        boolean isInside = true;
+        int maxTries = 50;
+        int curTry = 0;
+        while(isInside && curTry < maxTries){
+            newGameObject.setY(randomNumber(0, world.getHeight() - sprite.getHeight()));
+            boolean found = false;
+            for (int i = 0; i < world.getGameObjectItems().size(); i++) {
+                GameObject go = world.getGameObjectItems().get(i);
+                if (go != newGameObject && go instanceof IFlyingObject && newGameObject.getDistanceFrom(go) == 0.0) {
+                    found = true;
+                    break;
+                }
+            }
+            isInside = found;
+            curTry++;
+        }
+    }
+
     /**
      * Kijken of het object mag spawnen
+     *
      * @param chance
      * @return
      */
@@ -99,6 +122,7 @@ public class ObjectSpawner implements IAlarmListener {
 
     /**
      * Willekeurig nummer genereren met min en max
+     *
      * @param min
      * @param max
      * @return
