@@ -9,9 +9,12 @@ import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.view.EdgeFollowingViewport;
 import nl.han.ica.oopg.view.View;
+import nl.han.ica.game.objects.Finish;
 
 import java.awt.*;
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -23,14 +26,15 @@ public class Level {
     private String levelDirectory;
     private int levelToLoad;
     private Main world;
+    private Sprite sprite;
     private BackgroundHandler backgroundHandler;
+    private ObjectSpawner objectSpawner;
     private TextObject levelText;
     private TextObject scoreText;
     private TextObject highScoreText;
     private TextObject timeText;
     private TextObject livesText;
     private nl.han.ica.oopg.sound.Sound objectPopSound;
-    private ObjectSpawner objectSpawner;
     private int worldWidth = 1280;
     private int worldHeight = 720;
     private int windowWidth = 1280;
@@ -221,8 +225,15 @@ public class Level {
             System.out.println("Laatste level");
         }else{
             //hier de finish spawnen en deze code uitvoeren als je over de finish gaat:
+            finishSpawner(objectSpawner.defaultSpeed);
             unlockNextLevel();
         }
+    }
+
+    private void finishSpawner(int xspeed) {
+        Sprite finishSprite = new Sprite(world.resourcesString + "images/finish.png");
+        GameObject newGameObject = new Finish(this.world, finishSprite, xspeed);
+        world.addGameObject(newGameObject, world.getWidth(), 0);
     }
 
     /**

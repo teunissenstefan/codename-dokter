@@ -16,6 +16,7 @@ import java.util.Random;
 public class ObjectSpawner implements IAlarmListener {
 
     private float objectsPerSecond;
+    public int defaultSpeed = -10;
     private Random random;
     private Main world;
     private Alarm alarm;
@@ -120,7 +121,7 @@ public class ObjectSpawner implements IAlarmListener {
         coinSprite.resize(200, 50);
         objectClassArrayList.add(Coin.class);
         objectSpriteArrayList.add(coinSprite);
-        objectSpeedArrayList.add(-10);
+        objectSpeedArrayList.add(defaultSpeed);
         objectChanceArrayList.add(0.1f);
         objectLocationXArrayList.add(world.getWidth());
 
@@ -128,7 +129,7 @@ public class ObjectSpawner implements IAlarmListener {
         blockSprite.resize(50, 50);
         objectClassArrayList.add(Block.class);
         objectSpriteArrayList.add(blockSprite);
-        objectSpeedArrayList.add(-10);
+        objectSpeedArrayList.add(defaultSpeed);
         objectChanceArrayList.add(0.9f);
         objectLocationXArrayList.add(world.getWidth());
 
