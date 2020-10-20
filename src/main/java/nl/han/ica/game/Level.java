@@ -59,8 +59,8 @@ public class Level {
      */
     public Level(Main world, int levelToLoad) {
         this.world = world;
-        this.levelDirectory = String.format(world.resourcesString + "levels/%1s/", levelToLoad);
         this.levelToLoad = levelToLoad;
+        this.setLevelDirectory();
     }
 
     /**
@@ -191,6 +191,7 @@ public class Level {
             backgroundHandler.updateBackgrounds();
         }
         if(creditsTextPanel != null && creditsTextPanel.getY()+creditsTextPanel.getHeight() < 0){
+            levelToLoad = 0;
             this.menuMain();
             creditsTextPanel = null;
         }
@@ -248,6 +249,7 @@ public class Level {
      */
     private void menuCredits(){
         levelToLoad = 0;
+        this.setLevelDirectory();
         world.deleteAllDashboards();
         world.deleteAllGameOBjects();
         world.getView().setBackground(0,0,0);
@@ -501,6 +503,14 @@ public class Level {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * De levelDirectory setten
+     * @return
+     */
+    private void setLevelDirectory(){
+        levelDirectory = String.format(world.resourcesString + "levels/%1s/", levelToLoad);
     }
 
     /**
