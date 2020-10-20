@@ -47,6 +47,7 @@ public class Level {
     private int score;
     private int highscore = 0;
     private int timeInSeconds = -1;
+    private int difficulty = 1;
     private long lastUpdateTime = 0;
 
     /**
@@ -325,6 +326,8 @@ public class Level {
             levelText.setText("Level: " + line.replace("title=", ""));
         } else if (line.startsWith("time=")) {
             timeInSeconds = Integer.parseInt(line.replace("time=", ""));
+        } else if (line.startsWith("difficulty=")) {
+            difficulty = Integer.parseInt(line.replace("difficulty=", ""));
         }
     }
 
@@ -360,7 +363,7 @@ public class Level {
      * Maakt de spawner voor de objecten aan
      */
     public void createObjectSpawner() {
-        objectSpawner = new ObjectSpawner(world, objectPopSound, 2);
+        objectSpawner = new ObjectSpawner(world, objectPopSound, difficulty);
     }
 
     /**
