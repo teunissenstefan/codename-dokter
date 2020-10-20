@@ -7,13 +7,12 @@ import processing.core.PGraphics;
 import java.awt.*;
 
 public class TextPanel extends GameObject {
-    private int x,y, width, height;
     private Main main;
     private Color bgColor;
     private Color fgColor;
     private String text;
 
-    public TextPanel(Main main, String text, int x, int y, int width, int height, Color bgColor, Color fgColor){
+    public TextPanel(Main main, String text, float x, float y, float width, float height, Color bgColor, Color fgColor){
         this.main = main;
         this.text = text;
         this.x = x;
@@ -35,6 +34,6 @@ public class TextPanel extends GameObject {
         g.rect(this.x, this.y, this.width, this.height);
         g.fill(fgColor.getRGB());
         g.textSize(20);
-        g.text(this.text, 20, this.y+30);
+        g.text(this.text, this.x+10, this.y+30);
     }
 }
