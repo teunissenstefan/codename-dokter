@@ -215,21 +215,18 @@ public class Level {
         } else if (timeInSeconds == 0 && objectSpawner != null) {
             timeText.setText("Time: " + timeInSeconds);
             timeInSeconds--;
-            levelFinished();
+            objectSpawner.stopAlarm();
+            finishSpawner(-2);
         }
     }
 
     /**
      * Level finish spawnen
      */
-    private void levelFinished() {
-        objectSpawner.stopAlarm();
-
+    public void levelFinished() {
         if(isLastLevel()){
             menuCredits();
         }else{
-            //hier de finish spawnen en deze code uitvoeren als je over de finish gaat:
-            finishSpawner(objectSpawner.defaultSpeed);
             unlockNextLevel();
             if(levelToLoad!=0){
                 Level level = new Level(this.world, levelToLoad+1);
@@ -246,7 +243,7 @@ public class Level {
     }
 
     /**
-     *
+     * Aftiteling starten
      */
     private void menuCredits(){
         levelToLoad = 0;

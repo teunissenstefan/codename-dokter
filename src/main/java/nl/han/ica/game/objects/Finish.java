@@ -21,7 +21,7 @@ public class Finish extends SpriteObject implements IFlyingObject {
 
     @Override
     public void hit() {
-        //
+        this.world.getLevel().levelFinished();
     }
 
     @Override
