@@ -45,6 +45,8 @@ public class Main extends GameEngine {
     @Override
     public void setupGame() {
         deleteAllGameOBjects();
+        initSounds();
+
         if (levelToLoad > 0) {
             level = new Level(this, levelToLoad);
             level.load();
@@ -53,7 +55,6 @@ public class Main extends GameEngine {
         level = new Level(this, 0);
         level.menuMain();
 
-        initSounds();
     }
 
     /**
