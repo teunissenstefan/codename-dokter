@@ -7,7 +7,7 @@ public interface IFlyingObject  {
     void hit();
 
     /**
-     * De condities voor wanneer het obejct verwijderdt moet worden
+     * De condities voor wanneer het object verwijderd moet worden
      */
     void checkIfOffScreen();
 }

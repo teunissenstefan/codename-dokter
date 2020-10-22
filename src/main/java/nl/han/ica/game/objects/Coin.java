@@ -24,6 +24,8 @@ public class Coin extends AnimatedLoopObject implements IFlyingObject {
 
     @Override
     public void hit() {
+        world.getSoundHandler().getCoinSound().rewind();
+        world.getSoundHandler().getCoinSound().play();
         this.world.getLevel().increaseScore(1);
         this.world.deleteGameObject(this);
     }

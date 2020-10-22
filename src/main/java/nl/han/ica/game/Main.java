@@ -5,10 +5,10 @@ import processing.core.PApplet;
 
 public class Main extends GameEngine {
     private Player player;
-    int tileSize = 50;
     private Level level;
     private int levelToLoad = -1;
     String resourcesString = "resources/";
+    private SoundHandler soundHandler;
 
     /**
      * Entry point
@@ -45,13 +45,27 @@ public class Main extends GameEngine {
     @Override
     public void setupGame() {
         deleteAllGameOBjects();
-        if(levelToLoad > 0){
+        initSounds();
+
+        if (levelToLoad > 0) {
             level = new Level(this, levelToLoad);
             level.load();
             return;
         }
         level = new Level(this, 0);
         level.menuMain();
+
+    }
+
+    /**
+     * De soundHandler en sounds instellen
+     */
+    private void initSounds(){
+        soundHandler = new SoundHandler(this, resourcesString + "sounds/");
+        soundHandler.setBackgroundSound("background.mp3");
+        soundHandler.getBackgroundSound().loop(-1);
+        soundHandler.setCoinSound("coin.mp3");
+        soundHandler.setHitSound("oof.mp3");
     }
 
     @Override
@@ -70,9 +84,10 @@ public class Main extends GameEngine {
 
     /**
      * Level setten
+     *
      * @param level
      */
-    public void setLevel(Level level){
+    public void setLevel(Level level) {
         this.level = level;
     }
 
@@ -92,5 +107,14 @@ public class Main extends GameEngine {
      */
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    /**
+     * De SoundHandler opvragen
+     *
+     * @return Player
+     */
+    public SoundHandler getSoundHandler() {
+        return this.soundHandler;
     }
 }

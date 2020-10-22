@@ -12,6 +12,7 @@ import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.objects.SpriteObject;
 import nl.han.ica.oopg.objects.AnimatedSpriteObject;
 import processing.core.PVector;
+
 import java.util.List;
 
 public class Player extends AnimatedSpriteObject implements ICollidableWithGameObjects {
@@ -28,7 +29,7 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
     private final int speed = 15;
     private final int gravity = 10;
     int lives = 3;
-    boolean invincible;
+    private final boolean invincible;
 
     /**
      * Constructor
@@ -36,7 +37,7 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
      * @param world Referentie naar de wereld
      */
     public Player(Main world, Sprite sprite, int size, boolean invincible) {
-        super(sprite,2);
+        super(sprite, 2);
         this.world = world;
         this.size = size;
         setFriction(0.5f);
@@ -69,7 +70,14 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
             reloadIfNotInvincible(false);
         }
 
-        if (blink == true) {
+        animateHit();
+    }
+
+    /**
+     * De invincibility frames weergeven
+     */
+    private void animateHit() {
+        if (blink) {
             if (System.currentTimeMillis() >= lastTime + 300) {
                 nextFrame();
                 lastTime = System.currentTimeMillis();
@@ -81,12 +89,16 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
         }
     }
 
-    private void reloadIfNotInvincible(boolean top){
-        if(!invincible) {
+    /**
+     * Alleen herladen als de player niet permanent invincible is
+     * @param top
+     */
+    private void reloadIfNotInvincible(boolean top) {
+        if (!invincible) {
             world.getLevel().load();
             return;
         }
-        if(top){
+        if (top) {
             setY(0);
             return;
         }
@@ -111,7 +123,7 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
         if (keyCode == world.LEFT) {
             leftSpeed = 0;
         }
-        if(keyCode == world.RIGHT){
+        if (keyCode == world.RIGHT) {
             rightSpeed = 0;
         }
     }
@@ -119,12 +131,14 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
     /**
      * De speler heeft pijn :(
      */
-    public void takeHit(){
-        if(blink == false) {
+    public void takeHit() {
+        if (!blink) {
+            world.getSoundHandler().getHitSound().rewind();
+            world.getSoundHandler().getHitSound().play();
             lives--;
             charcterBlink();
         }
-        if(lives==0){
+        if (lives == 0) {
             world.getLevel().load();
         }
     }
@@ -132,7 +146,7 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
     /**
      * De speler heeft geen pijn meer :)
      */
-    public void getsHeart(){
+    public void getsHeart() {
         lives++;
     }
 
@@ -150,10 +164,11 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
     }
 
     /**
+     * Het knipperen starten
      * De dokter knippert als hij een blok raakt
      */
-    public void charcterBlink(){
+    public void charcterBlink() {
         blink = true;
-        blinktime = System.currentTimeMillis()+blinktimeAmount;
+        blinktime = System.currentTimeMillis() + blinktimeAmount;
     }
 }
