@@ -23,7 +23,8 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
     int downSpeed = 0;
     boolean blink = false;
     long blinktime;
-    int blinktimeAmount = 5000;
+    long lastTime;
+    int blinktimeAmount = 2000;
     private final int speed = 15;
     private final int gravity = 10;
     int lives = 3;
@@ -69,9 +70,11 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
         }
 
         if (blink == true) {
-            if (System.currentTimeMillis() <= blinktime) {
+            if (System.currentTimeMillis() >= lastTime + 300) {
                 nextFrame();
-            } else {
+                lastTime = System.currentTimeMillis();
+            }
+            if(System.currentTimeMillis() >= blinktime){
                 blink = false;
                 setCurrentFrameIndex(0);
             }
