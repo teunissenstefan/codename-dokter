@@ -18,6 +18,10 @@ public class Heart extends AnimatedLoopObject implements IFlyingObject  {
         setySpeed(5);
     }
 
+    /**
+     * Het omhoor en omlaag laten gaan van het hartje
+     * @param worldHeight
+     */
     public void upAndDown(int worldHeight){
         if(this.getY()+sprite.getHeight() >= (worldHeight * 0.95)){
             setySpeed(-5);

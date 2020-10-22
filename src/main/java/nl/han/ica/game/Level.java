@@ -86,6 +86,9 @@ public class Level {
         createDashboard(worldWidth, worldHeight);
     }
 
+    /**
+     * De basis van een menu laden
+     */
     public void loadMenu() {
         deleteAllObjects();
         score = 0;
@@ -238,6 +241,10 @@ public class Level {
         }
     }
 
+    /**
+     * De Finishline spawnen
+     * @param xspeed
+     */
     private void finishSpawner(int xspeed) {
         Sprite finishSprite = new Sprite(world.resourcesString + "images/finish.png");
         GameObject newGameObject = new Finish(this.world, finishSprite, xspeed);

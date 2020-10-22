@@ -89,6 +89,12 @@ public class ObjectSpawner implements IAlarmListener {
         startAlarm();
     }
 
+    /**
+     * Kijken of het nieuwe object in een ander object zit:
+     *  zoja: een nieuwe Y genereren
+     * @param newGameObject
+     * @param sprite
+     */
     private void checkIfObjectIsInsideOtherObject(GameObject newGameObject, Sprite sprite) {
         boolean isInside = true;
         int maxTries = 50;
