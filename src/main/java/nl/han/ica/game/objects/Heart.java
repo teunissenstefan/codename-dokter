@@ -41,6 +41,8 @@ public class Heart extends AnimatedLoopObject implements IFlyingObject  {
 
     @Override
     public void hit() {
+        world.getSoundHandler().getCoinSound().rewind();
+        world.getSoundHandler().getCoinSound().play();
         this.world.getPlayer().getsHeart();
         this.world.deleteGameObject(this);
     }

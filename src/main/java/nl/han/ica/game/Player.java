@@ -133,6 +133,8 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
      */
     public void takeHit() {
         if (!blink) {
+            world.getSoundHandler().getHitSound().rewind();
+            world.getSoundHandler().getHitSound().play();
             lives--;
             charcterBlink();
         }
