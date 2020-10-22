@@ -356,7 +356,7 @@ public class Level {
     private void createObjects(boolean invincible) {
         int playerSize = 50;
         Sprite playerSprite = new Sprite(world.resourcesString + "images/player.png");
-        playerSprite.resize(playerSize, playerSize);
+        playerSprite.resize(playerSize*2, playerSize);
         world.setPlayer(new Player(world, playerSprite, playerSize, invincible));
         world.addGameObject(world.getPlayer(), 0, 0);
     }

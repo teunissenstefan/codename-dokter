@@ -10,17 +10,20 @@ import nl.han.ica.oopg.exceptions.TileNotFoundException;
 import nl.han.ica.oopg.objects.GameObject;
 import nl.han.ica.oopg.objects.Sprite;
 import nl.han.ica.oopg.objects.SpriteObject;
+import nl.han.ica.oopg.objects.AnimatedSpriteObject;
 import processing.core.PVector;
-
 import java.util.List;
 
-public class Player extends SpriteObject implements ICollidableWithGameObjects {
+public class Player extends AnimatedSpriteObject implements ICollidableWithGameObjects {
     private int size = 100;
     private final Main world;
     int rightSpeed = 0;
     int leftSpeed = 0;
     int upSpeed = 0;
     int downSpeed = 0;
+    boolean blink = false;
+    long blinktime;
+    int blinktimeAmount = 5000;
     private final int speed = 15;
     private final int gravity = 10;
     int lives = 3;
@@ -32,13 +35,13 @@ public class Player extends SpriteObject implements ICollidableWithGameObjects {
      * @param world Referentie naar de wereld
      */
     public Player(Main world, Sprite sprite, int size, boolean invincible) {
-        super(sprite);
+        super(sprite,2);
         this.world = world;
         this.size = size;
-//        setCurrentFrameIndex(1);
         setFriction(0.5f);
         this.setGravity(gravity);
         this.invincible = invincible;
+//        setCurrentFrameIndex(1);
     }
 
     @Override
@@ -63,6 +66,15 @@ public class Player extends SpriteObject implements ICollidableWithGameObjects {
         }
         if (getY() > world.getView().getWorldHeight() - size) {//onder
             reloadIfNotInvincible(false);
+        }
+
+        if (blink == true) {
+            if (System.currentTimeMillis() <= blinktime) {
+                nextFrame();
+            } else {
+                blink = false;
+                setCurrentFrameIndex(0);
+            }
         }
     }
 
@@ -105,7 +117,10 @@ public class Player extends SpriteObject implements ICollidableWithGameObjects {
      * De speler heeft pijn :(
      */
     public void takeHit(){
-        lives--;
+        if(blink == false) {
+            lives--;
+            charcterBlink();
+        }
         if(lives==0){
             world.getLevel().load();
         }
@@ -129,5 +144,13 @@ public class Player extends SpriteObject implements ICollidableWithGameObjects {
 //                world.increaseBubblesPopped();
             }
         }
+    }
+
+    /**
+     * De dokter knippert als hij een blok raakt
+     */
+    public void charcterBlink(){
+        blink = true;
+        blinktime = System.currentTimeMillis()+blinktimeAmount;
     }
 }
