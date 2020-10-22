@@ -78,8 +78,6 @@ public class ObjectSpawner implements IAlarmListener {
                     GameObject newGameObject = (GameObject) constructor.newInstance(this.world, sprite, speed);
                     world.addGameObject(newGameObject, locationX, 0);
                     checkIfObjectIsInsideOtherObject(newGameObject, sprite);
-                    //kijken of hij erin zit. kan beste als we engine aanpassen tbh
-                    // GameObject gameObjectCollide kijken ofzo
                 }
             } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
