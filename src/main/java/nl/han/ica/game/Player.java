@@ -136,7 +136,7 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
             world.getSoundHandler().getHitSound().rewind();
             world.getSoundHandler().getHitSound().play();
             lives--;
-            charcterBlink();
+            characterBlink();
         }
         if (lives == 0) {
             world.getLevel().load();
@@ -167,7 +167,7 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
      * Het knipperen starten
      * De dokter knippert als hij een blok raakt
      */
-    public void charcterBlink() {
+    public void characterBlink() {
         blink = true;
         blinktime = System.currentTimeMillis() + blinktimeAmount;
     }
