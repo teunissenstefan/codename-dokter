@@ -3,6 +3,8 @@ package nl.han.ica.game;
 import nl.han.ica.oopg.engine.GameEngine;
 import processing.core.PApplet;
 
+import java.awt.event.KeyEvent;
+
 public class Main extends GameEngine {
     private Player player;
     private Level level;
@@ -36,6 +38,30 @@ public class Main extends GameEngine {
                 resourcesString = "src/main/java/nl/han/ica/game/resources/";
             }
         }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode() == 27){//Escape
+            e = null;
+            switch(level.getMenuState()){
+                case Level:
+                    level.getObjectSpawner().stopAlarm();
+                    level = new Level(this, 0);
+                    level.menuLevels();
+                    break;
+                case LevelSelect:
+                case Credits:
+                    level.menuMain();
+                    break;
+                case MainMenu:
+                default:
+                    exit();
+                    break;
+            }
+            return;
+        }
+        super.keyPressed(e);
     }
 
     /**

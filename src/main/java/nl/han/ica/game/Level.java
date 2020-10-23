@@ -49,6 +49,7 @@ public class Level {
     private int timeInSeconds = -1;
     private int difficulty = 1;
     private long lastUpdateTime = 0;
+    private MenuState menuState;
 
     /**
      * The constructor allows you to specify the filename the internal storage
@@ -67,6 +68,7 @@ public class Level {
      * De map inladen
      */
     public void load() {
+        this.menuState = MenuState.Level;
         deleteAllObjects();
         score = 0;
 
@@ -110,6 +112,9 @@ public class Level {
      */
     public void menuMain() {
         this.loadMenu();
+        creditsTextPanel = null;
+        levelToLoad = 0;
+        this.menuState = MenuState.MainMenu;
 
         Sprite logoSprite = new Sprite(world.resourcesString + "images/logo.png");
         ImageObject logo = new ImageObject(logoSprite);
@@ -131,6 +136,7 @@ public class Level {
      */
     public void menuLevels() {
         this.loadMenu();
+        this.menuState = MenuState.LevelSelect;
 
         Sprite trumpSprite = new Sprite(world.resourcesString + "images/trump.png");
         ImageObject trump = new ImageObject(trumpSprite);
@@ -164,8 +170,9 @@ public class Level {
     public void deleteAllObjects() {
         world.deleteAllGameOBjects();
         world.deleteAllDashboards();
-        if (objectSpawner != null)
+        if (objectSpawner != null) {
             objectSpawner.stopAlarm();
+        }
     }
 
     /**
@@ -193,10 +200,8 @@ public class Level {
         if (backgroundHandler != null) {
             backgroundHandler.updateBackgrounds();
         }
-        if(creditsTextPanel != null && creditsTextPanel.getY()+creditsTextPanel.getHeight() < 0){
-            levelToLoad = 0;
+        if (creditsTextPanel != null && creditsTextPanel.getY() + creditsTextPanel.getHeight() < 0) {
             this.menuMain();
-            creditsTextPanel = null;
         }
         movePlayerToLast();
 
@@ -229,12 +234,12 @@ public class Level {
      * Level finish spawnen
      */
     public void levelFinished() {
-        if(isLastLevel()){
+        if (isLastLevel()) {
             menuCredits();
-        }else{
+        } else {
             unlockNextLevel();
-            if(levelToLoad!=0){
-                Level level = new Level(this.world, levelToLoad+1);
+            if (levelToLoad != 0) {
+                Level level = new Level(this.world, levelToLoad + 1);
                 level.load();
                 this.world.setLevel(level);
             }
@@ -243,6 +248,7 @@ public class Level {
 
     /**
      * De Finishline spawnen
+     *
      * @param xspeed
      */
     private void finishSpawner(int xspeed) {
@@ -254,16 +260,17 @@ public class Level {
     /**
      * Aftiteling starten
      */
-    private void menuCredits(){
+    private void menuCredits() {
+        this.menuState = MenuState.Credits;
         levelToLoad = 0;
         this.setLevelDirectory();
         world.deleteAllDashboards();
         world.deleteAllGameOBjects();
-        world.getView().setBackground(0,0,0);
+        world.getView().setBackground(0, 0, 0);
 
         creditsTextPanel = new TextPanel(this.world, "Gemaakt door:\n" +
                 "Stefan Teunissen\n" +
-                "Thomas van Minnen\n", this.windowWidth/2-125, this.windowHeight, 250, 125, Color.black, Color.white);
+                "Thomas van Minnen\n", this.windowWidth / 2 - 125, this.windowHeight, 250, 125, Color.black, Color.white);
         creditsTextPanel.setySpeed(-2);
         world.addGameObject(creditsTextPanel);
     }
@@ -363,7 +370,7 @@ public class Level {
     private void createObjects(boolean invincible) {
         int playerSize = 50;
         Sprite playerSprite = new Sprite(world.resourcesString + "images/player.png");
-        playerSprite.resize(playerSize*2, playerSize);
+        playerSprite.resize(playerSize * 2, playerSize);
         world.setPlayer(new Player(world, playerSprite, playerSize, invincible));
         world.addGameObject(world.getPlayer(), 0, 0);
     }
@@ -477,10 +484,11 @@ public class Level {
 
     /**
      * Kijken of het huidige level het laatste level is
+     *
      * @return
      */
     private boolean isLastLevel() {
-        File folder = new File(world.resourcesString+"levels");
+        File folder = new File(world.resourcesString + "levels");
         int lastLevel = 0;
         for (final File fileEntry : folder.listFiles()) {
             if (fileEntry.isDirectory()) {
@@ -502,7 +510,7 @@ public class Level {
 
         String putString = "";
         for (int i = 0; i < alreadyUnlockedLevels.size(); i++) {
-            if(!(alreadyUnlockedLevels.get(i) == 1))
+            if (!(alreadyUnlockedLevels.get(i) == 1))
                 putString = putString.concat(alreadyUnlockedLevels.get(i) + ",");
         }
         try (PrintWriter out = new PrintWriter(this.getUnlockedLevelsLocation())) {
@@ -514,9 +522,10 @@ public class Level {
 
     /**
      * De levelDirectory setten
+     *
      * @return
      */
-    private void setLevelDirectory(){
+    private void setLevelDirectory() {
         levelDirectory = String.format(world.resourcesString + "levels/%1s/", levelToLoad);
     }
 
@@ -527,5 +536,23 @@ public class Level {
      */
     private String getUnlockedLevelsLocation() {
         return world.resourcesString.concat("levels/unlocked");
+    }
+
+    /**
+     * De MenuState opvragen
+     *
+     * @return
+     */
+    public MenuState getMenuState() {
+        return this.menuState;
+    }
+
+    /**
+     * De objectSpawner ophalen
+     *
+     * @return
+     */
+    public ObjectSpawner getObjectSpawner() {
+        return this.objectSpawner;
     }
 }
