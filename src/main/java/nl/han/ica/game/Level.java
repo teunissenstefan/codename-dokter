@@ -26,7 +26,6 @@ public class Level {
     private String levelDirectory;
     private int levelToLoad;
     private Main world;
-    private Sprite sprite;
     private BackgroundHandler backgroundHandler;
     private ObjectSpawner objectSpawner;
     private TextObject levelText;
@@ -35,7 +34,6 @@ public class Level {
     private TextObject timeText;
     private TextObject livesText;
     private TextPanel creditsTextPanel;
-    private nl.han.ica.oopg.sound.Sound objectPopSound;
     private int worldWidth = 1280;
     private int worldHeight = 720;
     private int windowWidth = 1280;
@@ -50,6 +48,7 @@ public class Level {
     private int difficulty = 1;
     private long lastUpdateTime = 0;
     private MenuState menuState;
+    private long levelStartTime;
 
     /**
      * The constructor allows you to specify the filename the internal storage
@@ -86,6 +85,7 @@ public class Level {
         createObjects(false);
         createObjectSpawner();
         createDashboard(worldWidth, worldHeight);
+        levelStartTime = System.currentTimeMillis();
     }
 
     /**
@@ -149,8 +149,8 @@ public class Level {
         Button btnLevel4 = new LevelSelectButton(world, 4, "4: Lungs", 1070, 180, 125, 100);
         TextPanel description = new TextPanel(world,
                 "TRUMP IS IN DANGER\nAND YOU HAVE TO SAVE HIM!\nHelp trump defeat the evil libtards\nby curing him of Corona!\n\n" +
-                        "You are Dr. Doctor, flying through trump's body\nto save him. Throughout his body you will find\n" +
-                        "enemies that you have to kill by shooting\nvaccines at them.",
+                        "You are Dr. Doctor, flying through Trump's body\nto save him. Throughout his body you will find\n" +
+                        "obstacles that you have to avoid. This is the\nonly way to cure him!",
                 10, world.getLevel().getWorldHeight() - (290 + 10), 500, 290, new Color(113, 113, 113), new Color(0, 0, 0)
         );
         world.addGameObject(btnLevel1);
@@ -231,9 +231,10 @@ public class Level {
     }
 
     /**
-     * Level finish spawnen
+     * Level finishen
      */
     public void levelFinished() {
+        this.setTimeToFile(System.currentTimeMillis() - levelStartTime);
         if (isLastLevel()) {
             menuCredits();
         } else {
@@ -268,11 +269,66 @@ public class Level {
         world.deleteAllGameOBjects();
         world.getView().setBackground(0, 0, 0);
 
-        creditsTextPanel = new TextPanel(this.world, "Gemaakt door:\n" +
+        long lvl1Time = getTimeFromFile(1);
+        long lvl2Time = getTimeFromFile(2);
+        long lvl3Time = getTimeFromFile(3);
+        long lvl4Time = getTimeFromFile(4);
+        long totalTime = lvl1Time+lvl2Time+lvl3Time+lvl4Time;
+
+        int creditsWidth = 360;
+        creditsTextPanel = new TextPanel(this.world, "Congratulations! You cured Trump!\n\n\n" +
+
+                "Time per level:\n"+
+                "Level 1: "+calculateTime(lvl1Time)+"\n"+
+                "Level 2: "+calculateTime(lvl2Time)+"\n"+
+                "Level 3: "+calculateTime(lvl3Time)+"\n"+
+                "Level 4: "+calculateTime(lvl4Time)+"\n\n"+
+                "Total time: "+calculateTime(totalTime)+"\n\n\n"+
+
+                "Programmers:\n" +
                 "Stefan Teunissen\n" +
-                "Thomas van Minnen\n", this.windowWidth / 2 - 125, this.windowHeight, 250, 125, Color.black, Color.white);
+                "Thomas van Minnen\n\n\n"+
+
+                "Graphic designers:\n" +
+                "Stefan Teunissen\n" +
+                "Thomas van Minnen\n"+
+                "Shay Deeders\n\n\n"+
+
+                "Audio designers:\n" +
+                "Stefan Teunissen\n" +
+                "Thomas van Minnen\n\n\n"+
+
+                "Level designers:\n" +
+                "Stefan Teunissen\n" +
+                "Thomas van Minnen\n\n\n"+
+
+                "Story designers:\n" +
+                "Stefan Teunissen\n" +
+                "Thomas van Minnen\n\n\n"+
+
+                "Animation designers:\n" +
+                "Stefan Teunissen\n" +
+                "Thomas van Minnen\n\n\n"+
+
+                "Directors:\n" +
+                "Stefan Teunissen\n" +
+                "Thomas van Minnen\n\n\n",
+                this.windowWidth / 2 - creditsWidth / 2, this.windowHeight, creditsWidth, 1425, Color.black, Color.white);
         creditsTextPanel.setySpeed(-2);
         world.addGameObject(creditsTextPanel);
+    }
+
+    private String calculateTime(long time){
+        int minutes = 0;
+        int seconds = 0;
+
+        seconds = Math.round(time / 1000);
+        minutes = seconds / 60;
+        seconds = seconds - (60* minutes);
+
+        String minutesString = (String.valueOf(minutes).length() < 2) ? "0"+minutes : String.valueOf(minutes);
+        String secondsString = (String.valueOf(seconds).length() < 2) ? "0"+seconds : String.valueOf(seconds);
+        return minutesString+":"+secondsString;
     }
 
     /**
@@ -379,7 +435,7 @@ public class Level {
      * Maakt de spawner voor de objecten aan
      */
     public void createObjectSpawner() {
-        objectSpawner = new ObjectSpawner(world, objectPopSound, difficulty);
+        objectSpawner = new ObjectSpawner(world, difficulty);
     }
 
     /**
@@ -406,6 +462,41 @@ public class Level {
             try {
                 String content = Files.readString(Paths.get(this.getHighscoreLocation()), StandardCharsets.US_ASCII);
                 return Integer.parseInt(content.trim());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Tijd in bestand gooien
+     *
+     * @param time
+     */
+    public void setTimeToFile(long time) {
+        try (PrintWriter out = new PrintWriter(this.getTimeLocation())) {
+            out.println(time);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Tijd laden uit bestand
+     *
+     * @return
+     */
+    public long getTimeFromFile(int level) {
+        String timeFileLocation = this.getTimeLocation();
+        if(level != 0){
+            timeFileLocation = String.format(world.resourcesString + "levels/%1s/time", level);
+        }
+        File f = new File(timeFileLocation);
+        if (f.exists() && !f.isDirectory()) {
+            try {
+                String content = Files.readString(Paths.get(timeFileLocation), StandardCharsets.US_ASCII);
+                return Long.parseLong(content.trim());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -456,6 +547,15 @@ public class Level {
      */
     private String getHighscoreLocation() {
         return levelDirectory.concat("highscore");
+    }
+
+    /**
+     * De tijd locatie opvragen
+     *
+     * @return String
+     */
+    private String getTimeLocation() {
+        return levelDirectory.concat("time");
     }
 
     /**

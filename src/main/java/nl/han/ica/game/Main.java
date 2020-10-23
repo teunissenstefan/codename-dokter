@@ -42,26 +42,32 @@ public class Main extends GameEngine {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == 27){//Escape
-            e = null;
-            switch(level.getMenuState()){
-                case Level:
-                    level.getObjectSpawner().stopAlarm();
-                    level = new Level(this, 0);
-                    level.menuLevels();
-                    break;
-                case LevelSelect:
-                case Credits:
-                    level.menuMain();
-                    break;
-                case MainMenu:
-                default:
-                    exit();
-                    break;
-            }
+        if (e.getKeyCode() == 27) {//Escape
+            handleEscape();
             return;
         }
         super.keyPressed(e);
+    }
+
+    /**
+     * De Escape functionaliteit
+     */
+    private void handleEscape() {
+        switch (level.getMenuState()) {
+            case Level:
+                level.getObjectSpawner().stopAlarm();
+                level = new Level(this, 0);
+                level.menuLevels();
+                break;
+            case LevelSelect:
+            case Credits:
+                level.menuMain();
+                break;
+            case MainMenu:
+            default:
+                exit();
+                break;
+        }
     }
 
     /**
@@ -86,7 +92,7 @@ public class Main extends GameEngine {
     /**
      * De soundHandler en sounds instellen
      */
-    private void initSounds(){
+    private void initSounds() {
         soundHandler = new SoundHandler(this, resourcesString + "sounds/");
         soundHandler.setBackgroundSound("background.mp3");
         soundHandler.getBackgroundSound().loop(-1);

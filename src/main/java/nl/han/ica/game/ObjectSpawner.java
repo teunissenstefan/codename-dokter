@@ -22,7 +22,6 @@ public class ObjectSpawner implements IAlarmListener {
     private Random random;
     private Main world;
     private Alarm alarm;
-    private nl.han.ica.oopg.sound.Sound popSound;
     private ArrayList<Class> objectClassArrayList;
     private ArrayList<Sprite> objectSpriteArrayList;
     private ArrayList<Integer> objectSpeedArrayList;
@@ -36,10 +35,9 @@ public class ObjectSpawner implements IAlarmListener {
      * @param popSound         Geluid dat moet klinken als een bel knapt
      * @param objectsPerSecond Aantal objecten dat per seconden gemaakt moet worden
      */
-    public ObjectSpawner(Main world, nl.han.ica.oopg.sound.Sound popSound, float objectsPerSecond) {
+    public ObjectSpawner(Main world, float objectsPerSecond) {
         this.objectsPerSecond = objectsPerSecond;
         this.world = world;
-        this.popSound = popSound;
         random = new Random();
         setupObjectList();
         startAlarm();
