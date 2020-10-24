@@ -94,6 +94,7 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
      */
     private void reloadIfNotInvincible(boolean top) {
         if (!invincible) {
+            world.getLevel().getObjectSpawner().stopAlarm();
             world.getLevel().load();
             return;
         }
