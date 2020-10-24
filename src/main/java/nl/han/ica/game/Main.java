@@ -98,6 +98,7 @@ public class Main extends GameEngine {
         soundHandler.getBackgroundSound().loop(-1);
         soundHandler.setCoinSound("coin.mp3");
         soundHandler.setHitSound("oof.mp3");
+        soundHandler.setFinishSound("finish.mp3");
     }
 
     @Override

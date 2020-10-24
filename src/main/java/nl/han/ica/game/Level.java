@@ -235,6 +235,8 @@ public class Level {
      */
     public void levelFinished() {
         this.setTimeToFile(System.currentTimeMillis() - levelStartTime);
+        this.world.getSoundHandler().getFinishSound().rewind();
+        this.world.getSoundHandler().getFinishSound().play();
         if (isLastLevel()) {
             menuCredits();
         } else {
@@ -275,8 +277,8 @@ public class Level {
         long lvl4Time = getTimeFromFile(4);
         long totalTime = lvl1Time+lvl2Time+lvl3Time+lvl4Time;
 
-        int creditsWidth = 360;
-        creditsTextPanel = new TextPanel(this.world, "Congratulations! You cured Trump!\n\n\n" +
+        int creditsWidth = 230;
+        creditsTextPanel = new TextPanel(this.world, "Congratulations!\nYou cured Trump!\n\n\n" +
 
                 "Time per level:\n"+
                 "Level 1: "+calculateTime(lvl1Time)+"\n"+
@@ -313,11 +315,16 @@ public class Level {
                 "Directors:\n" +
                 "Stefan Teunissen\n" +
                 "Thomas van Minnen\n\n\n",
-                this.windowWidth / 2 - creditsWidth / 2, this.windowHeight, creditsWidth, 1425, Color.black, Color.white);
+                this.windowWidth / 2 - creditsWidth / 2, this.windowHeight, creditsWidth, 1455, Color.black, Color.white);
         creditsTextPanel.setySpeed(-2);
         world.addGameObject(creditsTextPanel);
     }
 
+    /**
+     * De tijd van minuten en seconden als 00:00 string geven
+     * @param time
+     * @return
+     */
     private String calculateTime(long time){
         int minutes = 0;
         int seconds = 0;

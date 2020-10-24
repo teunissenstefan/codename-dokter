@@ -10,6 +10,7 @@ public class SoundHandler {
     private Sound backgroundSound;
     private Sound coinSound;
     private Sound hitSound;
+    private Sound finishSound;
 
     public SoundHandler(Main main, String soundsLocation) {
         this.main = main;
@@ -65,5 +66,21 @@ public class SoundHandler {
      */
     public void setHitSound(String soundFileLocation) {
         this.hitSound = new Sound(this.main, soundsLocation + soundFileLocation);
+    }
+
+    /**
+     * De finishSound opvragen
+     * @return
+     */
+    public Sound getFinishSound(){
+        return this.finishSound;
+    }
+
+    /**
+     * De finishSound instellen
+     * @param soundFileLocation
+     */
+    public void setFinishSound(String soundFileLocation){
+        this.finishSound = new Sound(this.main, soundsLocation + soundFileLocation);
     }
 }

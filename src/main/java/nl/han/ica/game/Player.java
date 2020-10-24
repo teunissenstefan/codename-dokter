@@ -43,7 +43,6 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
         setFriction(0.5f);
         this.setGravity(gravity);
         this.invincible = invincible;
-//        setCurrentFrameIndex(1);
     }
 
     @Override
@@ -154,11 +153,7 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
     public void gameObjectCollisionOccurred(List<GameObject> collidedGameObjects) {
         for (GameObject g : collidedGameObjects) {
             if (g instanceof IFlyingObject) {
-//                popSound.rewind();
-//                popSound.play();
                 ((IFlyingObject) g).hit();
-//                world.deleteGameObject(g);
-//                world.increaseBubblesPopped();
             }
         }
     }
