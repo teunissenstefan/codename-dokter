@@ -4,7 +4,6 @@ import nl.han.ica.oopg.objects.GameObject;
 import processing.core.PGraphics;
 
 public class TextObject extends GameObject {
-
     private String text;
     private int fontSize;
 

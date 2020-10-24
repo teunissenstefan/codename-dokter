@@ -17,19 +17,19 @@ import java.util.List;
 
 public class Player extends AnimatedSpriteObject implements ICollidableWithGameObjects {
     private int size = 100;
-    private final Main world;
-    int rightSpeed = 0;
-    int leftSpeed = 0;
-    int upSpeed = 0;
-    int downSpeed = 0;
-    boolean blink = false;
-    long blinktime;
-    long lastTime;
-    int blinktimeAmount = 2000;
-    private final int speed = 15;
-    private final int gravity = 10;
-    int lives = 3;
-    private final boolean invincible;
+    private Main world;
+    private int rightSpeed = 0;
+    private int leftSpeed = 0;
+    private int upSpeed = 0;
+    private int downSpeed = 0;
+    private boolean blink = false;
+    private long blinktime;
+    private long lastTime;
+    private int blinktimeAmount = 2000;
+    private final int SPEED = 15;
+    private final int GRAVITY = 10;
+    public int lives = 3;
+    private final boolean INVINCIBLE;
 
     /**
      * Constructor
@@ -41,8 +41,8 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
         this.world = world;
         this.size = size;
         setFriction(0.5f);
-        this.setGravity(gravity);
-        this.invincible = invincible;
+        this.setGravity(GRAVITY);
+        this.INVINCIBLE = invincible;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
      * @param top
      */
     private void reloadIfNotInvincible(boolean top) {
-        if (!invincible) {
+        if (!INVINCIBLE) {
             world.getLevel().getObjectSpawner().stopAlarm();
             world.getLevel().load();
             return;
@@ -108,13 +108,13 @@ public class Player extends AnimatedSpriteObject implements ICollidableWithGameO
     @Override
     public void keyPressed(int keyCode, char key) {
         if (keyCode == world.LEFT) {
-            leftSpeed = speed;
+            leftSpeed = SPEED;
         }
         if (keyCode == world.UP || key == ' ' || keyCode == world.DOWN) {
             this.setGravity(this.getGravity() * -1);
         }
         if (keyCode == world.RIGHT) {
-            rightSpeed = speed;
+            rightSpeed = SPEED;
         }
     }
 

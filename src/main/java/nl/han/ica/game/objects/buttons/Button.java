@@ -7,7 +7,7 @@ import processing.core.PGraphics;
 
 import java.awt.*;
 
-public abstract class Button extends GameObject implements IMouseInput {
+public abstract class Button extends GameObject {
     private int x,y, width, height;
     private Main main;
     private Color bgColor;

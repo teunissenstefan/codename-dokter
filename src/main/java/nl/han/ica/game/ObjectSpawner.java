@@ -32,7 +32,6 @@ public class ObjectSpawner implements IAlarmListener {
      * Constructor
      *
      * @param world            Referentie naar de wereld
-     * @param popSound         Geluid dat moet klinken als een bel knapt
      * @param objectsPerSecond Aantal objecten dat per seconden gemaakt moet worden
      */
     public ObjectSpawner(Main world, float objectsPerSecond) {

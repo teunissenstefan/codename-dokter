@@ -9,7 +9,7 @@ public class Main extends GameEngine {
     private Player player;
     private Level level;
     private int levelToLoad = -1;
-    String resourcesString = "resources/";
+    public String resourcesString = "resources/";
     private SoundHandler soundHandler;
 
     /**

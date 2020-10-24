@@ -38,7 +38,6 @@ public class Level {
     private int worldHeight = 720;
     private int windowWidth = 1280;
     private int windowHeight = 720;
-    private float zoomFactor = 1;
     private int backgroundR = 52;
     private int backgroundG = 201;
     private int backgroundB = 235;
