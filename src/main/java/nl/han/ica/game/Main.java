@@ -9,7 +9,7 @@ public class Main extends GameEngine {
     private Player player;
     private Level level;
     private int levelToLoad = -1;
-    public String resourcesString = "resources/";
+    public String resourcesString = "src/main/java/nl/han/ica/game/resources/";
     private SoundHandler soundHandler;
 
     /**
@@ -34,8 +34,8 @@ public class Main extends GameEngine {
         for (int i = 0; i < args.length; i++) {
             if (args[i].startsWith("--level=") || args[i].startsWith("-l=")) {
                 levelToLoad = Integer.parseInt(args[i].split("=")[1]);
-            } else if (args[i].equals("--dev")) {
-                resourcesString = "src/main/java/nl/han/ica/game/resources/";
+            } else if (args[i].equals("--not-dev")) {
+                resourcesString = "resources/";
             }
         }
     }
